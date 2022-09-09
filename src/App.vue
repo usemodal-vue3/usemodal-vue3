@@ -1,6 +1,7 @@
 <script setup>
   import { ref, onMounted, watchEffect, toRefs, reactive } from 'vue';
   import { UseModal as Modal, UseModalGroup } from './components/modal';
+//   import { UseModal as Modal, UseModalGroup } from 'modal-vue3';
 
   const modalVisibles = reactive({});
   modalVisibles.m1 = true;
