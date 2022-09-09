@@ -1,5 +1,5 @@
 import { reactive as y, ref as g, defineComponent as v, h as n } from "vue";
-const h = y({}), r = {
+const h = y({}), a = {
   currOrder: 0,
   triggerTotal: 0,
   list: [],
@@ -18,21 +18,21 @@ const h = y({}), r = {
 };
 function B(t) {
   if (t) {
-    r.list = [];
+    a.list = [];
     for (let e in t) {
       let l = {
         name: e,
         order: Number(t[e])
       };
-      r.track(l);
+      a.track(l);
     }
-    r.list.sort((e, l) => e.order - l.order);
+    a.list.sort((e, l) => e.order - l.order);
   }
   return function(e, l) {
-    return r.trigger(e, l), h;
+    return a.trigger(e, l), h;
   };
 }
-let d = null, f = null, a = g(0.6);
+let d = null, f = null, r = g(0.6);
 function k(t) {
   let e = null;
   if (t.value >= 1)
@@ -110,11 +110,11 @@ const w = v({
     return () => {
       if (e.default) {
         let u = i ? t.visible[i] : t.visible;
-        u ? (t.animation === !1 ? a.value = 1 : (d != i && (d = i, a.value = 0.6), k(a)), a.value >= 1 && (f = i, l("onVisible"))) : (f == i || !i) && l("onUnVisible");
+        u ? (t.animation === !1 ? r.value = 1 : (d != i && (d = i, r.value = 0.6), k(r)), r.value >= 1 && (f = i, l("onVisible"))) : (f == i || !i) && l("onUnVisible");
         const b = (o) => {
           !t.maskClosable || o.target === c.value && s(i);
         }, s = (o) => {
-          console.log(o, "name"), o ? r.trigger(o, !1) : l("update:visible", !1);
+          o && a.list.length > 0 ? a.trigger(o, !1) : l("update:visible", !1);
         };
         return u ? n("div", {
           class: t.modalClass
@@ -134,7 +134,7 @@ const w = v({
               "div",
               {
                 class: "modal-vue3-content",
-                style: `width:${m};position:relative;top:${x}; ${t.type != "clean" ? "border:1px solid #f0f0f0;" : ""}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${t.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${a.value});`
+                style: `width:${m};position:relative;top:${x}; ${t.type != "clean" ? "border:1px solid #f0f0f0;" : ""}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${t.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${r.value});`
               },
               [
                 t.type != "clean" ? n("div", {
