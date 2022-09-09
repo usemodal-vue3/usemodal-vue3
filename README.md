@@ -20,7 +20,7 @@ let isVisible = ref(false);
 </Modal>
 ```
 
-Your page may need to pop up multiple dialogs, and different dialogs may depend on different data sources, sometimes even asynchronously, you can easily manage their popup order.
+Your page may need to pop up multiple modals, and different modals may depend on different data sources, sometimes even asynchronously, you can easily manage their popup order.
 
 ```javascript
 import { reactive } from 'vue';
@@ -42,10 +42,19 @@ setTimeout(() => {
 
 // m1 order is 2
 <Modal name="m1" v-model:visible="modalVisible">
-    <div>This dialog will be displayed first</div>
+    <div>This modal will be displayed first</div>
 </Modal>
 // m2 order is 1, will go first
 <Modal name="m2" v-model:visible="modalVisible">
-    <div>This dialog will be displayed according to the status when the previous one is closed or the display status is fasle</div>
+    <div>This modal will be displayed according to the status when the previous one is closed or the display status is fasle</div>
 </Modal>
 ```
+
+## Documentation
+
+### api
+
+| 左对齐 | 右对齐 | 居中对齐 |
+| :-----| ----: | :----: |
+| 单元格 | 单元格 | 单元格 |
+| 单元格 | 单元格 | 单元格 |
