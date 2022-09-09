@@ -13,11 +13,11 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'modal-vue3',
+    outDir: 'usemodal-vue3',
     lib: {
       entry: path.resolve(__dirname, './src/components/Modal.js'),
-      name: 'modal-vue3',
-      fileName: 'modal-vue3'
+      name: 'usemodal-vue3',
+      fileName: 'usemodal-vue3'
     },
     rollupOptions: {
       external: ['vue'],
