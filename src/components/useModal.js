@@ -1,5 +1,5 @@
 
-import { defineComponent, h, reactive, ref } from 'vue';
+import { defineComponent, h, reactive, ref, defineEmits } from 'vue';
 
 const currVisible = reactive({});
 const dep = {
@@ -60,6 +60,7 @@ function cancel(name) {
 }
 
 let currName = null;
+let visibalName = null;
 let scale = ref(0.6);
 function animation(scale) {
     let timer = null;
@@ -73,6 +74,7 @@ function animation(scale) {
     }
 }
 
+
 export const Modal = defineComponent({
     props: {
         mask: Boolean,
@@ -81,6 +83,14 @@ export const Modal = defineComponent({
         mask: {
             type: Boolean,
             default: true
+        },
+        maskClosable: {
+            type: Boolean,
+            default: true
+        },
+        type: {
+            type: String,
+            default: ''
         },
         draggable: {
             type: Boolean,
@@ -133,13 +143,14 @@ export const Modal = defineComponent({
             },
         }
     },
-    setup(props, { slots }) {
+    setup(props, { slots, emit }) {
+        const name = props.name;
+        const width = typeof props.width === 'string' ?  props.width : `${props.width}px`;
+        const offsetTop = typeof props.offsetTop === 'string' ?  props.offsetTop : `${props.offsetTop}px`;
+        const wrapRef = ref(null);
         return () => {
             if(slots.default) {
-                const name = props.name;
                 let visible = name ? props.visible[name] : props.visible;
-                const width = typeof props.width === 'string' ?  props.width : `${props.width}px`;
-                const offsetTop = typeof props.offsetTop === 'string' ?  props.offsetTop : `${props.offsetTop}px`;
                 if(visible) {
                     if(props.animation === false) {
                         scale.value = 1;
@@ -150,22 +161,38 @@ export const Modal = defineComponent({
                         }
                         animation(scale);
                     }
+                    if(scale.value >= 1) {
+                        visibalName = name;
+                        emit('onVisible')
+                    }
+                } else {
+                    if(visibalName == name || !name) {
+                        emit('onUnVisible')
+                    }
+                }
+                const onWrapClick = (e) => {
+                    if(!props.maskClosable) return;
+                    if( e.target === wrapRef.value) {
+                        cancel(name);
+                    }
                 }
                 return visible ? h('div', {
                     class: props.modalClass
                 }, [
                     props.mask ? h('div', {
                         class: 'modal-vue3-mask',
-                        style: 'width:100%;height:100%;position:fixed;left:0;top:0;background-color:rgba(0, 0, 0, 0.25)'
+                        style: 'width:100%;height:100%;position:fixed;left:0;top:0;background-color:rgba(0, 0, 0, 0.25)',
                     }) : null,
                     h('div', {
-                        style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${props.zIndex};overflow:auto;outline:0;`
+                        ref: wrapRef,
+                        style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${props.zIndex};overflow:auto;outline:0;`,
+                        onclick: (e) => {onWrapClick(e)},
                     }, [
                         h('div', {
                             class: 'modal-vue3-content',
-                            style: `width:${width};position:relative;top:${offsetTop};border:1px solid #f0f0f0;margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box;background-color:#fff;border-radius:2px;transform:scale(${scale.value});`
+                            style: `width:${width};position:relative;top:${offsetTop}; ${props.type != 'clean' ? 'border:1px solid #f0f0f0;' : ''}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${props.type != 'clean' ? 'background-color:#fff;' : ''}border-radius:2px;transform:scale(${scale.value});`
                         },[
-                            h('div', {
+                            props.type != 'clean' ? h('div', {
                                 class:"modal-vue3-header",
                                 style: 'padding: 12px 22px;border-bottom:1px solid #f0f0f0;position:relative;'
                             }, [
@@ -176,12 +203,12 @@ export const Modal = defineComponent({
                                         cancel(name);
                                     },
                                 }, 'x') : null
-                            ]),
+                            ]) : null,
                             h('div', {
                                 class:"modal-vue3-body",
-                                style: 'padding: 14px 22px'
+                                style: props.type != 'clean' ? 'padding: 14px 22px' : ''
                             }, slots.default()),
-                            h('div', {
+                            props.type != 'clean' ? h('div', {
                                 class:"modal-vue3-footer",
                                 style: 'padding: 12px 22px;display:flex;justify-content:flex-end;align-items:center;border-top:1px solid #f0f0f0;'
                             },[
@@ -189,13 +216,13 @@ export const Modal = defineComponent({
                                     class: 'modal-vue3-footer-cancel',
                                     style: 'margin-right: 20px;width:60px;height:30px;border-radius:2px;border: 1px solid #d9d9d9;display:flex;justify-content:center;align-items:center;cursor:pointer;',
                                     onclick: props.cancelButton.onclick && typeof props.cancelButton.onclick === 'function' ? props.cancelButton.onclick : () => {cancel(name)},
-                                },  props.cancelButton.text),
+                                },  props.cancelButton.text || 'cancel'),
                                 h('div', {
                                     class: 'modal-vue3-footer-ok',
                                     style: 'width:60px;height:30px;border-radius:2px;display:flex;justify-content:center;align-items:center;background-color:#4395ff;color:#fff;cursor:pointer;',
                                     onclick: props.okButton.onclick && typeof props.okButton.onclick === 'function' ? props.okButton.onclick : () => {cancel(name)},
-                                }, props.okButton.text)
-                            ]),
+                                }, props.okButton.text || 'ok')
+                            ]) : null,
                         ]
                         ),
                     ])

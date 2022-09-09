@@ -1,8 +1,6 @@
 <script setup>
-  import { ref, onMounted, watchEffect, toRefs, reactive } from 'vue';
-//   import { Modal, ModalGroup } from './components/modal';
+  import { reactive } from 'vue';
   import { useModal, Modal } from './components/useModal';
-//   import { UseModal as Modal, UseModalGroup } from 'modal-vue3';
 
 
   let setModal = useModal({
@@ -21,12 +19,8 @@
       modalVisibles.m2 = true;
   }, 3000)
 
-  function cacel() {
-      modalVisibles.m1 = false;
-  }
-  function cacel2() {
-      console.log(123)
-      modalVisibles.m2 = false;
+  function cancel() {
+    modalVisible = setModal('m1', false);
   }
 
   function show1() {
@@ -37,35 +31,32 @@
   }
 
   function okfn() {
-    console.log(111)
+    modalVisible = setModal('m1', false);
   }
 
+  function onVisible() {
+    console.log('onVisible')
+  }
 
+  function onUnVisible() {
+    console.log('onUnVisible', )
+  }
 </script>
   
 <template>
   <div @click="show1">show1</div>
   <div @click="show2">show2</div>
-  <!-- <ModalGroup 
-      :order="{m1: 1, m2: 2}"
-      :visibles="modalVisibles"
-      v-slot="visibles"
-      >
-      <Modal :visible="visibles['m1']">
-          <div>这是一个弹窗</div>
-          <div @click="cacel">关闭</div>
-      </Modal>
-      <Modal :visible="visibles['m2']">
-          <div>这是另一个弹窗</div>
-          <div @click="cacel2">关闭</div>
-      </Modal>
-  </ModalGroup> -->
-  <Modal name="m1" 
+  <Modal name="m1"
+     ref="ss"
      :visible="modalVisible"
      :okButton = "{
-        text:'确认',
         onclick: okfn
      }"
+     :cancelButton = "{
+        onclick: cancel
+     }"
+     @onVisible="onVisible"
+     @onUnVisible="onUnVisible"
      >
       <div>modal1</div>
   </Modal>
