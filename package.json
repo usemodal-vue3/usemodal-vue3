@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "modal-vue3": "^0.0.1",
+    "usemodal-vue3": "^0.0.2",
     "vue": "^3.2.38"
   },
   "devDependencies": {

@@ -55,9 +55,6 @@ export function useModal(order) {
     }
 }
 
-function cancel(name) {
-    dep.trigger(name, false);
-}
 
 let currName = null;
 let visibalName = null;
@@ -174,6 +171,13 @@ export const Modal = defineComponent({
                     if(!props.maskClosable) return;
                     if( e.target === wrapRef.value) {
                         cancel(name);
+                    }
+                }
+                function cancel(name) {
+                    if(name) {
+                        dep.trigger(name, false);
+                    } else {
+                        emit('update:visible', false)
                     }
                 }
                 return visible ? h('div', {

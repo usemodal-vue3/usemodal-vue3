@@ -1,106 +1,187 @@
-import { reactive as c, defineComponent as a, watch as u, h as t } from "vue";
-const n = c({});
-c({});
-const s = {
+import { reactive as y, ref as g, defineComponent as v, h as n } from "vue";
+const h = y({}), a = {
   currOrder: 0,
   triggerTotal: 0,
   list: [],
-  track(e) {
-    this.list.push(e);
+  track(t) {
+    this.list.push(t);
   },
-  trigger(e, i) {
-    if (this.triggerTotal++, this.list = this.list.map((r) => (r.name === e && (r.visible = i), r)), this.triggerTotal === this.list.length)
+  trigger(t, e) {
+    if (this.triggerTotal++, this.list = this.list.map((l) => (l.name === t && (l.visible = e), l)), this.triggerTotal >= this.list.length)
       if (this.currOrder < this.list.length) {
-        for (; this.currOrder < this.list.length && (n[this.list[this.currOrder].name] = this.list[this.currOrder].visible, !this.list[this.currOrder].visible); )
+        for (; this.currOrder < this.list.length && (h[this.list[this.currOrder].name] = this.list[this.currOrder].visible, !this.list[this.currOrder].visible); )
           this.currOrder++;
         this.currOrder = 0;
       } else
-        this.triggerTotal = 0, this.trigger(e, i);
+        this.triggerTotal = 0, this.trigger(t, e);
   }
 };
-function h() {
-  console.log("ok");
-}
-function g() {
-  console.log(n, "currVisible"), n.m1 = !1, console.log("cancel");
-}
-const v = a({
-  props: {
-    visibles: Object,
-    order: Object
-  },
-  setup(e, { slots: i }) {
-    const r = e.order, d = e.visibles;
-    if (r) {
-      for (let o in r) {
-        let l = {
-          name: o,
-          order: Number(r[o])
-        };
-        s.track(l);
-      }
-      s.list.sort((o, l) => o.order - l.order);
+function B(t) {
+  if (t) {
+    a.list = [];
+    for (let e in t) {
+      let l = {
+        name: e,
+        order: Number(t[e])
+      };
+      a.track(l);
     }
-    return u(d, (o) => {
-      s.triggerTotal = 0;
-      for (let l in o)
-        s.trigger(l, o[l]);
-    }), () => {
-      if (i.default)
-        return t("div", null, i.default(n));
-    };
+    a.list.sort((e, l) => e.order - l.order);
   }
-}), b = a({
+  return function(e, l) {
+    return a.trigger(e, l), h;
+  };
+}
+function r(t) {
+  a.trigger(t, !1);
+}
+let d = null, f = null, o = g(0.6);
+function k(t) {
+  let e = null;
+  if (t.value >= 1)
+    return !1;
+  clearTimeout(e), e = setTimeout(() => {
+    t.value += 0.02;
+  }, 6);
+}
+const w = v({
   props: {
     mask: Boolean,
-    visible: Boolean
+    visible: [Object, Boolean],
+    name: String,
+    mask: {
+      type: Boolean,
+      default: !0
+    },
+    maskClosable: {
+      type: Boolean,
+      default: !0
+    },
+    type: {
+      type: String,
+      default: ""
+    },
+    draggable: {
+      type: Boolean,
+      default: !1
+    },
+    modalClass: {
+      type: String,
+      default: "modal-vue3-wrap"
+    },
+    width: {
+      type: [String, Number],
+      default: 500
+    },
+    offsetTop: {
+      type: [String, Number],
+      default: 100
+    },
+    zIndex: {
+      type: [String, Number],
+      default: 1e3
+    },
+    title: {
+      type: String,
+      default: "Title"
+    },
+    animation: {
+      type: Boolean,
+      default: !0
+    },
+    closable: {
+      type: Boolean,
+      default: !0
+    },
+    cancelButton: {
+      type: Object,
+      default: () => ({
+        text: "cancel",
+        onclick: null
+      })
+    },
+    okButton: {
+      type: Object,
+      default: () => ({
+        text: "ok",
+        onclick: null
+      })
+    }
   },
-  setup(e, { slots: i }) {
+  setup(t, { slots: e, emit: l }) {
+    const i = t.name, m = typeof t.width == "string" ? t.width : `${t.width}px`, x = typeof t.offsetTop == "string" ? t.offsetTop : `${t.offsetTop}px`, s = g(null);
     return () => {
-      if (i.default)
-        return e.visible ? t("div", null, [
-          t("div", {
+      if (e.default) {
+        let u = i ? t.visible[i] : t.visible;
+        u ? (t.animation === !1 ? o.value = 1 : (d != i && (d = i, o.value = 0.6), k(o)), o.value >= 1 && (f = i, l("onVisible"))) : (f == i || !i) && l("onUnVisible");
+        const b = (c) => {
+          !t.maskClosable || c.target === s.value && r(i);
+        };
+        return u ? n("div", {
+          class: t.modalClass
+        }, [
+          t.mask ? n("div", {
+            class: "modal-vue3-mask",
             style: "width:100%;height:100%;position:fixed;left:0;top:0;background-color:rgba(0, 0, 0, 0.25)"
-          }),
-          t("div", {
-            style: "position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:1000;overflow:auto;outline:0;"
+          }) : null,
+          n("div", {
+            ref: s,
+            style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${t.zIndex};overflow:auto;outline:0;`,
+            onclick: (c) => {
+              b(c);
+            }
           }, [
-            t(
+            n(
               "div",
               {
                 class: "modal-vue3-content",
-                style: "width:500px;position:relative;top:100px;margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box;background-color:#fff;"
+                style: `width:${m};position:relative;top:${x}; ${t.type != "clean" ? "border:1px solid #f0f0f0;" : ""}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${t.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${o.value});`
               },
               [
-                t("div", {
-                  class: "modal-vue3-header"
-                }, t("div", null, "Title")),
-                t("div", null, i.default()),
-                t("div", {
-                  class: "modal-vue3-footer"
+                t.type != "clean" ? n("div", {
+                  class: "modal-vue3-header",
+                  style: "padding: 12px 22px;border-bottom:1px solid #f0f0f0;position:relative;"
                 }, [
-                  t("div", {
+                  n("div", null, t.title),
+                  t.closable ? n("div", {
+                    style: "width:20px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;position:absolute;top:15px;right:15px;font-size: 20px;",
+                    onclick: () => {
+                      r(i);
+                    }
+                  }, "x") : null
+                ]) : null,
+                n("div", {
+                  class: "modal-vue3-body",
+                  style: t.type != "clean" ? "padding: 14px 22px" : ""
+                }, e.default()),
+                t.type != "clean" ? n("div", {
+                  class: "modal-vue3-footer",
+                  style: "padding: 12px 22px;display:flex;justify-content:flex-end;align-items:center;border-top:1px solid #f0f0f0;"
+                }, [
+                  n("div", {
                     class: "modal-vue3-footer-cancel",
-                    onclick: g
-                  }, "cancel"),
-                  t("div", {
+                    style: "margin-right: 20px;width:60px;height:30px;border-radius:2px;border: 1px solid #d9d9d9;display:flex;justify-content:center;align-items:center;cursor:pointer;",
+                    onclick: t.cancelButton.onclick && typeof t.cancelButton.onclick == "function" ? t.cancelButton.onclick : () => {
+                      r(i);
+                    }
+                  }, t.cancelButton.text || "cancel"),
+                  n("div", {
                     class: "modal-vue3-footer-ok",
-                    onclick: h
-                  }, "ok")
-                ])
+                    style: "width:60px;height:30px;border-radius:2px;display:flex;justify-content:center;align-items:center;background-color:#4395ff;color:#fff;cursor:pointer;",
+                    onclick: t.okButton.onclick && typeof t.okButton.onclick == "function" ? t.okButton.onclick : () => {
+                      r(i);
+                    }
+                  }, t.okButton.text || "ok")
+                ]) : null
               ]
             )
           ])
         ]) : null;
+      }
     };
-  },
-  mounted() {
-    this.$emit("cacel", (e) => {
-      console.log(21213);
-    });
   }
 });
 export {
-  b as Modal,
-  v as ModalGroup
+  w as Modal,
+  B as useModal
 };

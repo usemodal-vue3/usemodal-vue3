@@ -1,6 +1,7 @@
 <script setup>
-  import { reactive } from 'vue';
+  import { reactive, ref } from 'vue';
   import { useModal, Modal } from './components/useModal';
+//   import { useModal, Modal } from 'usemodal-vue3';
 
 
   let setModal = useModal({
@@ -18,6 +19,11 @@
   setTimeout(() => {
       modalVisibles.m2 = true;
   }, 3000)
+
+  let modalShow = ref(false);
+  setTimeout(() => {
+    modalShow.value = true;
+  }, 2000)
 
   function cancel() {
     modalVisible = setModal('m1', false);
@@ -46,7 +52,7 @@
 <template>
   <div @click="show1">show1</div>
   <div @click="show2">show2</div>
-  <Modal name="m1"
+  <!-- <Modal name="m1"
      ref="ss"
      :visible="modalVisible"
      :okButton = "{
@@ -63,6 +69,18 @@
   <Modal name="m2" 
     :visible="modalVisible"
     :closable="false"
+    >
+      <div>modal2</div>
+  </Modal> -->
+  <Modal
+    v-model:visible="modalShow"
+    :closable="false"
+    :okButton = "{
+        onclick: okfn
+     }"
+     :cancelButton = "{
+        onclick: cancel
+     }"
     >
       <div>modal2</div>
   </Modal>

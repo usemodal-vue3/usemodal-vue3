@@ -15,7 +15,7 @@ export default defineConfig({
   build: {
     outDir: 'usemodal-vue3',
     lib: {
-      entry: path.resolve(__dirname, './src/components/Modal.js'),
+      entry: path.resolve(__dirname, './src/components/useModal.js'),
       name: 'usemodal-vue3',
       fileName: 'usemodal-vue3'
     },
