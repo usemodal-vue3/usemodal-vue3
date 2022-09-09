@@ -1,7 +1,7 @@
 <script setup>
   import { reactive, ref } from 'vue';
-  import { useModal, Modal } from './components/useModal';
-//   import { useModal, Modal } from 'usemodal-vue3';
+//   import { useModal, Modal } from './components/useModal';
+  import { useModal, Modal } from 'usemodal-vue3';
 
 
   let setModal = useModal({
@@ -21,9 +21,6 @@
   }, 3000)
 
   let modalShow = ref(false);
-  setTimeout(() => {
-    modalShow.value = true;
-  }, 2000)
 
   function cancel() {
     modalVisible = setModal('m1', false);
@@ -34,6 +31,10 @@
   }
   function show2() {
     modalVisible = setModal('m2', true);
+  }
+
+  function show3() {
+    modalShow.value = true;
   }
 
   function okfn() {
@@ -52,9 +53,10 @@
 <template>
   <div @click="show1">show1</div>
   <div @click="show2">show2</div>
-  <!-- <Modal name="m1"
+  <div @click="show3">show3</div>
+  <Modal name="m1"
      ref="ss"
-     :visible="modalVisible"
+     v-model:visible="modalVisible"
      :okButton = "{
         onclick: okfn
      }"
@@ -67,22 +69,16 @@
       <div>modal1</div>
   </Modal>
   <Modal name="m2" 
-    :visible="modalVisible"
+    v-model:visible="modalVisible"
     :closable="false"
     >
       <div>modal2</div>
-  </Modal> -->
+  </Modal>
   <Modal
     v-model:visible="modalShow"
     :closable="false"
-    :okButton = "{
-        onclick: okfn
-     }"
-     :cancelButton = "{
-        onclick: cancel
-     }"
     >
-      <div>modal2</div>
+      <div>modal3</div>
   </Modal>
 </template>
   

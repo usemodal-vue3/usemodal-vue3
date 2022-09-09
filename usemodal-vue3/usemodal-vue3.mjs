@@ -1,5 +1,5 @@
 import { reactive as y, ref as g, defineComponent as v, h as n } from "vue";
-const h = y({}), a = {
+const h = y({}), r = {
   currOrder: 0,
   triggerTotal: 0,
   list: [],
@@ -18,24 +18,21 @@ const h = y({}), a = {
 };
 function B(t) {
   if (t) {
-    a.list = [];
+    r.list = [];
     for (let e in t) {
       let l = {
         name: e,
         order: Number(t[e])
       };
-      a.track(l);
+      r.track(l);
     }
-    a.list.sort((e, l) => e.order - l.order);
+    r.list.sort((e, l) => e.order - l.order);
   }
   return function(e, l) {
-    return a.trigger(e, l), h;
+    return r.trigger(e, l), h;
   };
 }
-function r(t) {
-  a.trigger(t, !1);
-}
-let d = null, f = null, o = g(0.6);
+let d = null, f = null, a = g(0.6);
 function k(t) {
   let e = null;
   if (t.value >= 1)
@@ -109,13 +106,15 @@ const w = v({
     }
   },
   setup(t, { slots: e, emit: l }) {
-    const i = t.name, m = typeof t.width == "string" ? t.width : `${t.width}px`, x = typeof t.offsetTop == "string" ? t.offsetTop : `${t.offsetTop}px`, s = g(null);
+    const i = t.name, m = typeof t.width == "string" ? t.width : `${t.width}px`, x = typeof t.offsetTop == "string" ? t.offsetTop : `${t.offsetTop}px`, c = g(null);
     return () => {
       if (e.default) {
         let u = i ? t.visible[i] : t.visible;
-        u ? (t.animation === !1 ? o.value = 1 : (d != i && (d = i, o.value = 0.6), k(o)), o.value >= 1 && (f = i, l("onVisible"))) : (f == i || !i) && l("onUnVisible");
-        const b = (c) => {
-          !t.maskClosable || c.target === s.value && r(i);
+        u ? (t.animation === !1 ? a.value = 1 : (d != i && (d = i, a.value = 0.6), k(a)), a.value >= 1 && (f = i, l("onVisible"))) : (f == i || !i) && l("onUnVisible");
+        const b = (o) => {
+          !t.maskClosable || o.target === c.value && s(i);
+        }, s = (o) => {
+          console.log(o, "name"), o ? r.trigger(o, !1) : l("update:visible", !1);
         };
         return u ? n("div", {
           class: t.modalClass
@@ -125,17 +124,17 @@ const w = v({
             style: "width:100%;height:100%;position:fixed;left:0;top:0;background-color:rgba(0, 0, 0, 0.25)"
           }) : null,
           n("div", {
-            ref: s,
+            ref: c,
             style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${t.zIndex};overflow:auto;outline:0;`,
-            onclick: (c) => {
-              b(c);
+            onclick: (o) => {
+              b(o);
             }
           }, [
             n(
               "div",
               {
                 class: "modal-vue3-content",
-                style: `width:${m};position:relative;top:${x}; ${t.type != "clean" ? "border:1px solid #f0f0f0;" : ""}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${t.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${o.value});`
+                style: `width:${m};position:relative;top:${x}; ${t.type != "clean" ? "border:1px solid #f0f0f0;" : ""}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${t.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${a.value});`
               },
               [
                 t.type != "clean" ? n("div", {
@@ -146,7 +145,7 @@ const w = v({
                   t.closable ? n("div", {
                     style: "width:20px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;position:absolute;top:15px;right:15px;font-size: 20px;",
                     onclick: () => {
-                      r(i);
+                      s(i);
                     }
                   }, "x") : null
                 ]) : null,
@@ -162,14 +161,14 @@ const w = v({
                     class: "modal-vue3-footer-cancel",
                     style: "margin-right: 20px;width:60px;height:30px;border-radius:2px;border: 1px solid #d9d9d9;display:flex;justify-content:center;align-items:center;cursor:pointer;",
                     onclick: t.cancelButton.onclick && typeof t.cancelButton.onclick == "function" ? t.cancelButton.onclick : () => {
-                      r(i);
+                      s(i);
                     }
                   }, t.cancelButton.text || "cancel"),
                   n("div", {
                     class: "modal-vue3-footer-ok",
                     style: "width:60px;height:30px;border-radius:2px;display:flex;justify-content:center;align-items:center;background-color:#4395ff;color:#fff;cursor:pointer;",
                     onclick: t.okButton.onclick && typeof t.okButton.onclick == "function" ? t.okButton.onclick : () => {
-                      r(i);
+                      s(i);
                     }
                   }, t.okButton.text || "ok")
                 ]) : null

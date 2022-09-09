@@ -1,13 +1,12 @@
 {
     "name": "usemodal-vue3",
-    "version": "0.0.2",
+    "version": "0.0.6",
     "description": "An easy-to-use Modal for Vue 3. Multiple modal can pop up orderly.",
     "main": "usemodal-vue3.umd.js",
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": ["usemodal-vue3", "modal", "vue-modal", "vue3-modal", "vue-use-modal", "vue-dialog", "vue3-dialog", "vue-use-dialog"],
     "author": "https://github.com/usemodal-vue3/usemodal-vue3.git",
     "license": "MIT"
-  }
-  
+}

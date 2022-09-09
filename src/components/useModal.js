@@ -173,8 +173,8 @@ export const Modal = defineComponent({
                         cancel(name);
                     }
                 }
-                function cancel(name) {
-                    if(name) {
+                const cancel = (name) => {
+                    if(name && dep.list.length > 0) {
                         dep.trigger(name, false);
                     } else {
                         emit('update:visible', false)
