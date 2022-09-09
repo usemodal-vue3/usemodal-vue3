@@ -54,7 +54,7 @@ setTimeout(() => {
 
 ### api
 
-| 左对齐 | 右对齐 | 居中对齐 |
-| :-----| ----: | :----: |
-| 单元格 | 单元格 | 单元格 |
-| 单元格 | 单元格 | 单元格 |
+| params | Description | Type | Default |
+| :---- | :---- | :---- | :---- |
+| visible(v-model) | sssss | boolean |  |
+| name | sss | string |  |
