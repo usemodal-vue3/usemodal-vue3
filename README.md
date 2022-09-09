@@ -15,7 +15,37 @@ import { Modal } from 'usemodal-vue3';
 
 let isVisible = ref(false);
 
-<Modal v-model:visible="modalShow">
+<Modal v-model:visible="isVisible">
     <div>your content...</div>
+</Modal>
+```
+
+Your page may need to pop up multiple dialogs, and different dialogs may depend on different data sources, sometimes even asynchronously, you can easily manage their popup order.
+
+```javascript
+import { reactive } from 'vue';
+import { useModal, Modal } from 'usemodal-vue3';
+
+let setModal = useModal({
+    m1: 2, // The larger the number, the later in the order
+    m2: 1 // Smaller numbers, first in order
+});
+
+let modalVisible = reactive({});
+
+modalVisible = setModal('m1', true);
+
+setTimeout(() => {
+    // or  modalVisible = setModal('m2', false)
+    modalVisible = setModal('m2', true); // either true or false, you have to define a state.
+}, 2000)
+
+// m1 order is 2
+<Modal name="m1" v-model:visible="modalVisible">
+    <div>This dialog will be displayed first</div>
+</Modal>
+// m2 order is 1, will go first
+<Modal name="m2" v-model:visible="modalVisible">
+    <div>This dialog will be displayed according to the status when the previous one is closed or the display status is fasle</div>
 </Modal>
 ```

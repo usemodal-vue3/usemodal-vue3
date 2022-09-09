@@ -14,12 +14,6 @@
     modalVisible = setModal('m2', true);
   }, 3000)
 
-  const modalVisibles = reactive({});
-  modalVisibles.m1 = true;
-  setTimeout(() => {
-      modalVisibles.m2 = true;
-  }, 3000)
-
   let modalShow = ref(false);
 
   function cancel() {
@@ -55,7 +49,6 @@
   <div @click="show2">show2</div>
   <div @click="show3">show3</div>
   <Modal name="m1"
-     ref="ss"
      v-model:visible="modalVisible"
      :okButton = "{
         onclick: okfn
