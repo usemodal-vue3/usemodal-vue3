@@ -163,6 +163,7 @@ export const Modal = defineComponent({
                     }
                 } else {
                     if(visibalName == name || !name) {
+                        scale.value = 0.6;
                         emit('onUnVisible')
                     }
                 }
