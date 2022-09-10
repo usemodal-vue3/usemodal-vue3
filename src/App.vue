@@ -5,7 +5,7 @@
 
 
   let setModal = useModal({
-    m1: 1,
+    m1: 4,
     m2: 3
   });
   let modalVisible = reactive({});

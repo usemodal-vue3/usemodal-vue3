@@ -49,11 +49,11 @@ function myCancel() {
 
 // m1 order is 2
 <Modal name="m1" v-model:visible="modalVisible">
-    <div>This modal will be displayed first</div>
+    <div>This modal will be displayed according to the status when the previous one is closed or the display status is fasle</div>
 </Modal>
 // m2 order is 1, will go first
 <Modal name="m2" v-model:visible="modalVisible">
-    <div>This modal will be displayed according to the status when the previous one is closed or the display status is fasle</div>
+    <div>This modal will be displayed first</div>
 </Modal>
 ```
 
