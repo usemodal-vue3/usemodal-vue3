@@ -1,5 +1,5 @@
-import { reactive as y, ref as g, defineComponent as v, h as n } from "vue";
-const h = y({}), a = {
+import { reactive as v, ref as g, defineComponent as y, h as n } from "vue";
+const h = v({}), r = {
   currOrder: 0,
   triggerTotal: 0,
   list: [],
@@ -18,21 +18,21 @@ const h = y({}), a = {
 };
 function B(t) {
   if (t) {
-    a.list = [];
+    r.list = [];
     for (let e in t) {
       let l = {
         name: e,
         order: Number(t[e])
       };
-      a.track(l);
+      r.track(l);
     }
-    a.list.sort((e, l) => e.order - l.order);
+    r.list.sort((e, l) => e.order - l.order);
   }
   return function(e, l) {
-    return a.trigger(e, l), h;
+    return r.trigger(e, l), h;
   };
 }
-let d = null, f = null, r = g(0.6);
+let d = null, f = null, a = g(0.6);
 function k(t) {
   let e = null;
   if (t.value >= 1)
@@ -41,9 +41,8 @@ function k(t) {
     t.value += 0.02;
   }, 6);
 }
-const w = v({
+const w = y({
   props: {
-    mask: Boolean,
     visible: [Object, Boolean],
     name: String,
     mask: {
@@ -106,15 +105,15 @@ const w = v({
     }
   },
   setup(t, { slots: e, emit: l }) {
-    const i = t.name, m = typeof t.width == "string" ? t.width : `${t.width}px`, x = typeof t.offsetTop == "string" ? t.offsetTop : `${t.offsetTop}px`, c = g(null);
+    const i = t.name, x = typeof t.width == "string" ? t.width : `${t.width}px`, b = typeof t.offsetTop == "string" ? t.offsetTop : `${t.offsetTop}px`, c = g(null);
     return () => {
       if (e.default) {
         let u = i ? t.visible[i] : t.visible;
-        u ? (t.animation === !1 ? r.value = 1 : (d != i && (d = i, r.value = 0.6), k(r)), r.value >= 1 && (f = i, l("onVisible"))) : (f == i || !i) && l("onUnVisible");
-        const b = (o) => {
+        u ? (t.animation === !1 ? a.value = 1 : (d != i && (d = i, a.value = 0.6), k(a)), a.value >= 1 && (f = i, l("onVisible"))) : (f == i || !i) && (a.value = 0.6, l("onUnVisible"));
+        const m = (o) => {
           !t.maskClosable || o.target === c.value && s(i);
         }, s = (o) => {
-          o && a.list.length > 0 ? a.trigger(o, !1) : l("update:visible", !1);
+          o && r.list.length > 0 ? r.trigger(o, !1) : l("update:visible", !1);
         };
         return u ? n("div", {
           class: t.modalClass
@@ -127,14 +126,14 @@ const w = v({
             ref: c,
             style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${t.zIndex};overflow:auto;outline:0;`,
             onclick: (o) => {
-              b(o);
+              m(o);
             }
           }, [
             n(
               "div",
               {
                 class: "modal-vue3-content",
-                style: `width:${m};position:relative;top:${x}; ${t.type != "clean" ? "border:1px solid #f0f0f0;" : ""}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${t.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${r.value});`
+                style: `width:${x};position:relative;top:${b}; ${t.type != "clean" ? "border:1px solid #f0f0f0;" : ""}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${t.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${a.value});`
               },
               [
                 t.type != "clean" ? n("div", {
