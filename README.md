@@ -1,4 +1,4 @@
-# vue-modal
+# usemodal-vue3
 An easy-to-use Modal for Vue 3. Multiple modal can pop up orderly.
 
 [DEMO](https://usemodal-vue3.github.io/usemodal-vue3/)
