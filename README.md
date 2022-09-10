@@ -42,6 +42,11 @@ setTimeout(() => {
     modalVisible = setModal('m2', true); // either true or false, you have to define a state.
 }, 2000)
 
+function myCancel() {
+    // do something....
+     modalVisible = setModal('m1', false); // m1 is closed, while the other states are true in order
+}
+
 // m1 order is 2
 <Modal name="m1" v-model:visible="modalVisible">
     <div>This modal will be displayed first</div>
