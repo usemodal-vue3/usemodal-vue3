@@ -62,7 +62,7 @@ setTimeout(() => {
 | name | Required if there are multiple modals and there is an order problem | string |  |
 | mask | Whether the mask is visible | boolean | true |
 | maskClosable | Whether clicking on the mask can close the modal | boolean | true |
-| type | Type of the modal | string | '' |
+| type | Type of the modal . 'clean' is custom | string | '' |
 | modalClass | When you need to customize the style, you can modify the outermost class | string | '' |
 | width | Width of the modal. When the value is a number, the unit is px | string\|number | 500 |
 | offsetTop | Position from top. When the value is a number, the unit is px | string\|number | 100 |
