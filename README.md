@@ -7,7 +7,7 @@ An easy-to-use Modal for Vue 3. Multiple modal can pop up orderly.
 `npm i usemodal-vue3`
 
 ## CDN
-`https://www.unpkg.com/usemodal-vue3@0.1.0/usemodal-vue3.umd.js`
+`https://www.unpkg.com/usemodal-vue3`
 
 ## Usage
 
