@@ -12,7 +12,7 @@
   modalVisible = setModal('m1', true);
   setTimeout(() => {
     modalVisible = setModal('m2', true);
-  }, 3000)
+  }, 1000)
 
   let modalShow = ref(false);
 
