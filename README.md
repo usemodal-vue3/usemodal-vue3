@@ -62,8 +62,8 @@ setTimeout(() => {
 | maskClosable | Whether clicking on the mask can close the modal | boolean | true |
 | type | Type of the modal | string | '' |
 | modalClass | When you need to customize the style, you can modify the outermost class | string | '' |
-| width | Width of the modal | string|number | 500 |
-| offsetTop | Position from top | string|number | 100 |
+| width | Width of the modal | string\|number | 500 |
+| offsetTop | Position from top | string\|number | 100 |
 | zIndex | z-index | number | 1000 |
 | title | Title of the modal | string | 'Title' |
 | animation | Whether the animation pops up | boolean | true |
