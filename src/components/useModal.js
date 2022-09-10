@@ -74,7 +74,6 @@ function animation(scale) {
 
 export const Modal = defineComponent({
     props: {
-        mask: Boolean,
         visible: [Object, Boolean],
         name: String,
         mask: {

@@ -56,5 +56,17 @@ setTimeout(() => {
 
 | params | Description | Type | Default |
 | :---- | :---- | :---- | :---- |
-| visible(v-model) | sssss | boolean |  |
-| name | sss | string |  |
+| visible(v-model) | Is it visible ? | boolean |  |
+| name | Required if there are multiple modals and there is an order problem | string |  |
+| mask | Whether the mask is visible | boolean | true |
+| maskClosable | Whether clicking on the mask can close the modal | boolean | true |
+| type | Type of the modal | string | '' |
+| modalClass | When you need to customize the style, you can modify the outermost class | string | '' |
+| width | Width of the modal | string|number | 500 |
+| offsetTop | Position from top | string|number | 100 |
+| zIndex | z-index | number | 1000 |
+| title | Title of the modal | string | 'Title' |
+| animation | Whether the animation pops up | boolean | true |
+| closable | Whether the close icon is visible or not | boolean | true |
+| cancelButton | Cancel button's text configuration and click callback | object | {text: 'cancel', onclick: null} |
+| okButton | ok button's text configuration and click callback | object | {text: 'ok', onclick: null} |
