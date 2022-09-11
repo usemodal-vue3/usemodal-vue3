@@ -57,6 +57,23 @@ function myCancel() {
 </Modal>
 ```
 
+If you need to use drag and drop.
+
+```javascript
+// draggable = true. By default, hold down the title part and drag
+<Modal
+    v-model:visible="true" :draggable="true">
+    <div>...</div>
+</Modal>
+
+// You can customize the dragged part. Especially when 'type' is 'clean'
+const handle = ref();
+<Modal
+    v-model:visible="true" :draggable="handle">
+    <div ref="handle">You can hold here and drag</div>
+</Modal>
+```
+
 ## Documentation
 
 ### api
