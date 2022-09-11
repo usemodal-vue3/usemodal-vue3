@@ -134,7 +134,6 @@ export const Modal = defineComponent({
 
         let currName = null;
         let visibalName = null;
-        let unVisibalName = null;
         let scale = ref(SCALE);
         const animation = (scale) => {
             let timer = null;
@@ -230,10 +229,7 @@ export const Modal = defineComponent({
                 } else {
                     if(visibalName == name || !name) {
                         scale.value = SCALE;
-                        if(unVisibalName) {
-                            return;
-                        }
-                        unVisibalName = name
+                        visibalName = null;
                         emit('onUnVisible')
                     }
                 }

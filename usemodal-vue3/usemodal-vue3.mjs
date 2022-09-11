@@ -1,47 +1,38 @@
-import { reactive as v, ref as g, defineComponent as y, h as n } from "vue";
-const h = v({}), r = {
+import { reactive as B, defineComponent as N, ref as v, watch as z, h as i } from "vue";
+const b = 0.6, T = B({}), c = {
   currOrder: 0,
   triggerTotal: 0,
   list: [],
-  track(t) {
-    this.list.push(t);
+  track(e) {
+    this.list.push(e);
   },
-  trigger(t, e) {
-    if (this.triggerTotal++, this.list = this.list.map((l) => (l.name === t && (l.visible = e), l)), this.triggerTotal >= this.list.length)
+  trigger(e, n) {
+    if (this.triggerTotal++, this.list = this.list.map((l) => (l.name === e && (l.visible = n), l)), this.triggerTotal >= this.list.length)
       if (this.currOrder < this.list.length) {
-        for (; this.currOrder < this.list.length && (h[this.list[this.currOrder].name] = this.list[this.currOrder].visible, !this.list[this.currOrder].visible); )
+        for (; this.currOrder < this.list.length && (T[this.list[this.currOrder].name] = this.list[this.currOrder].visible, !this.list[this.currOrder].visible); )
           this.currOrder++;
         this.currOrder = 0;
       } else
-        this.triggerTotal = 0, this.trigger(t, e);
+        this.triggerTotal = 0, this.trigger(e, n);
   }
 };
-function B(t) {
-  if (t) {
-    r.list = [];
-    for (let e in t) {
+function H(e) {
+  if (e) {
+    c.list = [];
+    for (let n in e) {
       let l = {
-        name: e,
-        order: Number(t[e])
+        name: n,
+        order: Number(e[n])
       };
-      r.track(l);
+      c.track(l);
     }
-    r.list.sort((e, l) => e.order - l.order);
+    c.list.sort((n, l) => n.order - l.order);
   }
-  return function(e, l) {
-    return r.trigger(e, l), h;
+  return function(n, l) {
+    return c.trigger(n, l), T;
   };
 }
-let d = null, f = null, a = g(0.6);
-function k(t) {
-  let e = null;
-  if (t.value >= 1)
-    return !1;
-  clearTimeout(e), e = setTimeout(() => {
-    t.value += 0.02;
-  }, 6);
-}
-const w = y({
+const X = N({
   props: {
     visible: [Object, Boolean],
     name: String,
@@ -56,10 +47,6 @@ const w = y({
     type: {
       type: String,
       default: ""
-    },
-    draggable: {
-      type: Boolean,
-      default: !1
     },
     modalClass: {
       type: String,
@@ -89,6 +76,10 @@ const w = y({
       type: Boolean,
       default: !0
     },
+    draggable: {
+      type: [Boolean, Object],
+      default: !1
+    },
     cancelButton: {
       type: Object,
       default: () => ({
@@ -104,72 +95,114 @@ const w = y({
       })
     }
   },
-  setup(t, { slots: e, emit: l }) {
-    const i = t.name, x = typeof t.width == "string" ? t.width : `${t.width}px`, b = typeof t.offsetTop == "string" ? t.offsetTop : `${t.offsetTop}px`, c = g(null);
-    return () => {
-      if (e.default) {
-        let u = i ? t.visible[i] : t.visible;
-        u ? (t.animation === !1 ? a.value = 1 : (d != i && (d = i, a.value = 0.6), k(a)), a.value >= 1 && (f = i, l("onVisible"))) : (f == i || !i) && (a.value = 0.6, l("onUnVisible"));
-        const m = (o) => {
-          !t.maskClosable || o.target === c.value && s(i);
-        }, s = (o) => {
-          o && r.list.length > 0 ? r.trigger(o, !1) : l("update:visible", !1);
-        };
-        return u ? n("div", {
-          class: t.modalClass
+  setup(e, { slots: n, emit: l }) {
+    const o = e.name, O = typeof e.width == "string" ? e.width : `${e.width}px`, $ = typeof e.offsetTop == "string" ? e.offsetTop : `${e.offsetTop}px`, p = v(null), s = v(null);
+    let x = null, g = null, u = v(b);
+    const E = (t) => {
+      let d = null;
+      if (t.value >= 1)
+        return !1;
+      clearTimeout(d), d = setTimeout(() => {
+        t.value += 0.02;
+      }, 6);
+    }, h = (t) => {
+      t && c.list.length > 0 ? c.trigger(t, !1) : l("update:visible", !1);
+    }, j = (t) => {
+      !e.maskClosable || t.target === p.value && h(o);
+    }, a = v(), r = B({
+      left: void 0,
+      top: void 0
+    }), m = (t) => {
+      t.preventDefault(), t.stopPropagation();
+    }, y = (t) => {
+      let d = s.value.offsetLeft, S = s.value.offsetTop, C = {
+        width: s.value.offsetWidth,
+        height: s.value.offsetHeight,
+        clientWidth: document.documentElement.clientWidth,
+        clientHeight: document.documentElement.clientHeight,
+        x: t.pageX - d,
+        y: t.pageY - S
+      };
+      a.value = C, m(t);
+      const k = (f) => {
+        if (!a.value)
+          return;
+        let L = f.pageX, M = f.pageY;
+        r.left = Math.min(Math.max(L - a.value.x, 0), a.value.clientWidth - a.value.width), r.top = Math.min(Math.max(M - a.value.y, 0), a.value.clientHeight - a.value.height), m(f);
+      }, w = (f) => {
+        !a.value || (a.value = void 0, m(f), document.removeEventListener("pointermove", k), document.removeEventListener("pointerup", w));
+      };
+      document.addEventListener("pointermove", k), document.addEventListener("pointerup", w);
+    };
+    return z(() => e.draggable, (t) => {
+      typeof t == "object" && t !== null && t.addEventListener("pointerdown", y);
+    }), () => {
+      if (n.default) {
+        let t = o ? e.visible[o] : e.visible;
+        return t ? (e.animation === !1 ? u.value = 1 : (x != o && (x = o, u.value = b), E(u)), u.value >= 1 && !a.value && g != o && (g = o, l("onVisible"))) : (g == o || !o) && (u.value = b, g = null, l("onUnVisible")), t ? i("div", {
+          class: e.modalClass
         }, [
-          t.mask ? n("div", {
+          e.mask ? i("div", {
             class: "modal-vue3-mask",
             style: "width:100%;height:100%;position:fixed;left:0;top:0;background-color:rgba(0, 0, 0, 0.25)"
           }) : null,
-          n("div", {
-            ref: c,
-            style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${t.zIndex};overflow:auto;outline:0;`,
-            onclick: (o) => {
-              m(o);
+          i("div", {
+            ref: p,
+            style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${e.zIndex};overflow:auto;outline:0;`,
+            onclick: (d) => {
+              j(d);
             }
           }, [
-            n(
+            i(
               "div",
               {
+                ref: s,
                 class: "modal-vue3-content",
-                style: `width:${x};position:relative;top:${b}; ${t.type != "clean" ? "border:1px solid #f0f0f0;" : ""}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${t.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${a.value});`
+                style: `width:${O};position:relative;top:${typeof r.top == "number" ? r.top + "px" : $};left:${r.left ? r.left + "px" : ""};margin: ${typeof r.left == "number" ? "0" : "0 auto"}; ${e.type != "clean" ? "border:1px solid #f0f0f0;" : ""}overflow:auto;outline:0;box-sizing:border-box; ${e.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${u.value});`
               },
               [
-                t.type != "clean" ? n("div", {
+                e.type != "clean" ? i("div", {
                   class: "modal-vue3-header",
-                  style: "padding: 12px 22px;border-bottom:1px solid #f0f0f0;position:relative;"
+                  style: `padding:12px 22px;border-bottom:1px solid #f0f0f0;position:relative;${e.draggable && typeof e.draggable == "boolean" ? "cursor:move;" : ""}`,
+                  onpointerdown: e.draggable && typeof e.draggable == "boolean" ? y : null
                 }, [
-                  n("div", null, t.title),
-                  t.closable ? n("div", {
-                    style: "width:20px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;position:absolute;top:15px;right:15px;font-size: 20px;",
+                  i("div", null, e.title),
+                  e.closable ? i("div", {
+                    style: "width:20px;height:16px;cursor:pointer;position:absolute;top:15px;right:15px;font-size: 20px;",
                     onclick: () => {
-                      s(i);
+                      h(o);
                     }
-                  }, "x") : null
+                  }, [
+                    i("div", {
+                      style: "width:14px;height:1px;position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;background-color:#999;transform:rotate(45deg);"
+                    }, ""),
+                    i("div", {
+                      style: "width:14px;height:1px;position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;background-color:#999;transform:rotate(-45deg);"
+                    }, "")
+                  ]) : null
                 ]) : null,
-                n("div", {
+                i("div", {
                   class: "modal-vue3-body",
-                  style: t.type != "clean" ? "padding: 14px 22px" : ""
-                }, e.default()),
-                t.type != "clean" ? n("div", {
+                  style: e.type != "clean" ? "padding: 14px 22px" : ""
+                }, n.default()),
+                e.type != "clean" ? i("div", {
                   class: "modal-vue3-footer",
                   style: "padding: 12px 22px;display:flex;justify-content:flex-end;align-items:center;border-top:1px solid #f0f0f0;"
                 }, [
-                  n("div", {
+                  i("div", {
                     class: "modal-vue3-footer-cancel",
                     style: "margin-right: 20px;width:60px;height:30px;border-radius:2px;border: 1px solid #d9d9d9;display:flex;justify-content:center;align-items:center;cursor:pointer;",
-                    onclick: t.cancelButton.onclick && typeof t.cancelButton.onclick == "function" ? t.cancelButton.onclick : () => {
-                      s(i);
+                    onclick: e.cancelButton.onclick && typeof e.cancelButton.onclick == "function" ? e.cancelButton.onclick : () => {
+                      h(o);
                     }
-                  }, t.cancelButton.text || "cancel"),
-                  n("div", {
+                  }, e.cancelButton.text || "cancel"),
+                  i("div", {
                     class: "modal-vue3-footer-ok",
                     style: "width:60px;height:30px;border-radius:2px;display:flex;justify-content:center;align-items:center;background-color:#4395ff;color:#fff;cursor:pointer;",
-                    onclick: t.okButton.onclick && typeof t.okButton.onclick == "function" ? t.okButton.onclick : () => {
-                      s(i);
+                    onclick: e.okButton.onclick && typeof e.okButton.onclick == "function" ? e.okButton.onclick : () => {
+                      h(o);
                     }
-                  }, t.okButton.text || "ok")
+                  }, e.okButton.text || "ok")
                 ]) : null
               ]
             )
@@ -180,6 +213,6 @@ const w = y({
   }
 });
 export {
-  w as Modal,
-  B as useModal
+  X as Modal,
+  H as useModal
 };

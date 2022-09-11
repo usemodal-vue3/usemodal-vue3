@@ -40,6 +40,10 @@
     console.log('onVisible')
   }
 
+  function onVisible2() {
+    console.log('onVisible22')
+  }
+
   function onUnVisible() {
     console.log('onUnVisible2', )
   }
@@ -58,20 +62,20 @@
      :cancelButton = "{
         onclick: cancel
      }"
-     :draggable= "true"
+     :draggable= "handle"
      @onVisible="onVisible"
      @onUnVisible="onUnVisible1"
      >
-      <div>modal1</div>
+      <div ref="handle">modal1</div>
   </Modal>
   <Modal name="m2" 
     v-model:visible="modalVisible"
     :closable="false"
-    :draggable="handle"
-    @onVisible="onVisible"
+    :draggable= "true"
+    @onVisible="onVisible2"
     @onUnVisible="onUnVisible"
     >
-      <div ref="handle">modal2</div>
+      <div>modal2</div>
   </Modal>
   <Modal
     v-model:visible="modalShow"
