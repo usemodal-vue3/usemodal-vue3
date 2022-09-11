@@ -1,7 +1,7 @@
 <script setup>
   import { reactive, ref, onMounted } from 'vue';
-  import { useModal, Modal } from './components/useModal';
-  // import { useModal, Modal } from 'usemodal-vue3';
+  // import { useModal, Modal } from './components/useModal';
+  import { useModal, Modal } from 'usemodal-vue3';
 
   const handle = ref();
 
@@ -66,7 +66,7 @@
      @onVisible="onVisible"
      @onUnVisible="onUnVisible1"
      >
-      <div ref="handle">modal1</div>
+      <div ref="handle" style="cursor: move;">modal1. hold here to drag</div>
   </Modal>
   <Modal name="m2" 
     v-model:visible="modalVisible"
