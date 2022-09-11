@@ -92,8 +92,8 @@ const handle = ref();
 | animation | Whether the animation pops up | boolean | true |
 | closable | Whether the close icon is visible or not | boolean | true |
 | draggable | Is it draggable? The default target is Header(Title), but you can also pass in an element(commonly used in type for 'clean') | boolean\|object | false |
-| cancelButton | Cancel button's text configuration and click callback | object | {text: 'cancel', onclick: null} |
-| okButton | ok button's text configuration and click callback | object | {text: 'ok', onclick: null} |
+| cancelButton | Cancel button's text configuration and click callback | object | {text: 'cancel', onclick: () => {}} |
+| okButton | ok button's text configuration and click callback | object | {text: 'ok', onclick: () => {}} |
 
 ### event
 
@@ -103,6 +103,6 @@ const handle = ref();
 | onUnVisible | When the modal is hidden |  |
 
 
-### github
+## github
 
 [usemodal-vue3](https://github.com/usemodal-vue3/usemodal-vue3.git)
