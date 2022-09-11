@@ -1,5 +1,7 @@
 
-import { defineComponent, h, reactive, ref } from 'vue';
+import { defineComponent, h, reactive, ref , watch } from 'vue';
+
+const SCALE = 0.6;
 
 const currVisible = reactive({});
 const dep = {
@@ -56,22 +58,6 @@ export function useModal(order) {
 }
 
 
-let currName = null;
-let visibalName = null;
-let scale = ref(0.6);
-function animation(scale) {
-    let timer = null;
-    if(scale.value >= 1) {
-        return false;
-    } else {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            scale.value += 0.02;
-        }, 6)
-    }
-}
-
-
 export const Modal = defineComponent({
     props: {
         visible: [Object, Boolean],
@@ -87,10 +73,6 @@ export const Modal = defineComponent({
         type: {
             type: String,
             default: ''
-        },
-        draggable: {
-            type: Boolean,
-            default: false
         },
         modalClass: {
             type: String,
@@ -120,6 +102,10 @@ export const Modal = defineComponent({
             type: Boolean,
             default: true
         },
+        draggable: {
+            type: [Boolean,Object],
+            default: false
+        },
         cancelButton: {
             type: Object,
             default: () => {
@@ -144,6 +130,86 @@ export const Modal = defineComponent({
         const width = typeof props.width === 'string' ?  props.width : `${props.width}px`;
         const offsetTop = typeof props.offsetTop === 'string' ?  props.offsetTop : `${props.offsetTop}px`;
         const wrapRef = ref(null);
+        const contentRef = ref(null);
+
+        let currName = null;
+        let visibalName = null;
+        let unVisibalName = null;
+        let scale = ref(SCALE);
+        const animation = (scale) => {
+            let timer = null;
+            if(scale.value >= 1) {
+                return false;
+            } else {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    scale.value += 0.02;
+                }, 6)
+            }
+        }
+
+        const cancel = (name) => {
+            if(name && dep.list.length > 0) {
+                dep.trigger(name, false);
+            } else {
+                emit('update:visible', false)
+            }
+        }
+
+        const onWrapClick = (e) => {
+            if(!props.maskClosable) return;
+            if( e.target === wrapRef.value) {
+                cancel(name);
+            }
+        }
+
+
+        const rectData = ref();
+        const cententPosition = reactive({
+            left: undefined,
+            top: undefined
+        });
+        
+        const handleEvent = (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+        }
+        const start = (e) => {
+            let left = contentRef.value.offsetLeft;
+            let top =  contentRef.value.offsetTop;
+            let pos = {
+                width: contentRef.value.offsetWidth,
+                height: contentRef.value.offsetHeight,
+                clientWidth: document.documentElement.clientWidth,
+                clientHeight: document.documentElement.clientHeight,
+                x: e.pageX - left,
+                y: e.pageY - top,
+            }
+            rectData.value = pos;
+            handleEvent(e);
+            const move = (e) => {
+                if(!rectData.value) return
+                let pageX = e.pageX;
+                let pageY = e.pageY;
+                cententPosition.left = Math.min(Math.max(pageX - rectData.value.x , 0), rectData.value.clientWidth - rectData.value.width);
+                cententPosition.top = Math.min(Math.max(pageY - rectData.value.y , 0), rectData.value.clientHeight - rectData.value.height);
+                handleEvent(e);
+            }
+            const end = (e) => {
+                if (!rectData.value) return
+                rectData.value = undefined;
+                handleEvent(e);
+                document.removeEventListener('pointermove', move)
+                document.removeEventListener('pointerup', end)
+            }
+            document.addEventListener('pointermove', move)
+            document.addEventListener('pointerup', end)
+        }
+        watch(() => props.draggable, (target) => {
+            if(typeof target === 'object' && target !== null) {
+                target.addEventListener('pointerdown', start);
+            }
+        })
         return () => {
             if(slots.default) {
                 let visible = name ? props.visible[name] : props.visible;
@@ -153,31 +219,22 @@ export const Modal = defineComponent({
                     } else {
                         if(currName != name) {
                             currName = name;
-                            scale.value = 0.6;
+                            scale.value = SCALE;
                         }
                         animation(scale);
                     }
-                    if(scale.value >= 1) {
+                    if(scale.value >= 1 && !rectData.value && visibalName != name) {
                         visibalName = name;
                         emit('onVisible')
                     }
                 } else {
                     if(visibalName == name || !name) {
-                        scale.value = 0.6;
+                        scale.value = SCALE;
+                        if(unVisibalName) {
+                            return;
+                        }
+                        unVisibalName = name
                         emit('onUnVisible')
-                    }
-                }
-                const onWrapClick = (e) => {
-                    if(!props.maskClosable) return;
-                    if( e.target === wrapRef.value) {
-                        cancel(name);
-                    }
-                }
-                const cancel = (name) => {
-                    if(name && dep.list.length > 0) {
-                        dep.trigger(name, false);
-                    } else {
-                        emit('update:visible', false)
                     }
                 }
                 return visible ? h('div', {
@@ -193,20 +250,29 @@ export const Modal = defineComponent({
                         onclick: (e) => {onWrapClick(e)},
                     }, [
                         h('div', {
+                            ref: contentRef,
                             class: 'modal-vue3-content',
-                            style: `width:${width};position:relative;top:${offsetTop}; ${props.type != 'clean' ? 'border:1px solid #f0f0f0;' : ''}margin: 0 auto;overflow:auto;outline:0;box-sizing:border-box; ${props.type != 'clean' ? 'background-color:#fff;' : ''}border-radius:2px;transform:scale(${scale.value});`
+                            style: `width:${width};position:relative;top:${typeof cententPosition.top === 'number' ? cententPosition.top+'px' : offsetTop};left:${cententPosition.left ? cententPosition.left+'px' : '' };margin: ${typeof cententPosition.left === 'number' ? '0' : '0 auto'}; ${props.type != 'clean' ? 'border:1px solid #f0f0f0;' : ''}overflow:auto;outline:0;box-sizing:border-box; ${props.type != 'clean' ? 'background-color:#fff;' : ''}border-radius:2px;transform:scale(${scale.value});`
                         },[
                             props.type != 'clean' ? h('div', {
                                 class:"modal-vue3-header",
-                                style: 'padding: 12px 22px;border-bottom:1px solid #f0f0f0;position:relative;'
+                                style: `padding:12px 22px;border-bottom:1px solid #f0f0f0;position:relative;${props.draggable && typeof props.draggable === 'boolean' ? 'cursor:move;' : ''}`,
+                                onpointerdown: props.draggable && typeof props.draggable === 'boolean' ? start : null,
                             }, [
                                 h('div', null, props.title),
                                 props.closable ? h('div', {
-                                    style: 'width:20px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;position:absolute;top:15px;right:15px;font-size: 20px;',
+                                    style: 'width:20px;height:16px;cursor:pointer;position:absolute;top:15px;right:15px;font-size: 20px;',
                                     onclick: () => {
                                         cancel(name);
                                     },
-                                }, 'x') : null
+                                }, [
+                                    h('div', {
+                                        style: 'width:14px;height:1px;position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;background-color:#999;transform:rotate(45deg);'
+                                    }, ''),
+                                    h('div', {
+                                        style: 'width:14px;height:1px;position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;background-color:#999;transform:rotate(-45deg);'
+                                    }, '')
+                                ]) : null
                             ]) : null,
                             h('div', {
                                 class:"modal-vue3-body",

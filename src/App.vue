@@ -1,8 +1,9 @@
 <script setup>
-  import { reactive, ref } from 'vue';
-//   import { useModal, Modal } from './components/useModal';
-  import { useModal, Modal } from 'usemodal-vue3';
+  import { reactive, ref, onMounted } from 'vue';
+  import { useModal, Modal } from './components/useModal';
+  // import { useModal, Modal } from 'usemodal-vue3';
 
+  const handle = ref();
 
   let setModal = useModal({
     m1: 4,
@@ -40,8 +41,12 @@
   }
 
   function onUnVisible() {
-    console.log('onUnVisible', )
+    console.log('onUnVisible2', )
   }
+  function onUnVisible1() {
+    console.log('onUnVisible1', )
+  }
+  
 </script>
   
 <template>
@@ -50,22 +55,23 @@
   <div @click="show3">show3</div>
   <Modal name="m1"
      v-model:visible="modalVisible"
-     :okButton = "{
-        onclick: okfn
-     }"
      :cancelButton = "{
         onclick: cancel
      }"
+     :draggable= "true"
      @onVisible="onVisible"
-     @onUnVisible="onUnVisible"
+     @onUnVisible="onUnVisible1"
      >
       <div>modal1</div>
   </Modal>
   <Modal name="m2" 
     v-model:visible="modalVisible"
     :closable="false"
+    :draggable="handle"
+    @onVisible="onVisible"
+    @onUnVisible="onUnVisible"
     >
-      <div>modal2</div>
+      <div ref="handle">modal2</div>
   </Modal>
   <Modal
     v-model:visible="modalShow"
