@@ -156,7 +156,7 @@ export const Modal = defineComponent({
         }
 
         const onWrapClick = (e) => {
-            if(!props.maskClosable) return;
+            if(!props.maskClosable || !props.mask) return;
             if( e.target === wrapRef.value) {
                 cancel(name);
             }

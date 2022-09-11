@@ -108,7 +108,7 @@ const X = N({
     }, h = (t) => {
       t && c.list.length > 0 ? c.trigger(t, !1) : l("update:visible", !1);
     }, j = (t) => {
-      !e.maskClosable || t.target === p.value && h(o);
+      !e.maskClosable || !e.mask || t.target === p.value && h(o);
     }, a = v(), r = B({
       left: void 0,
       top: void 0
