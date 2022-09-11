@@ -44,7 +44,7 @@ setTimeout(() => {
 
 function myCancel() {
     // do something....
-     modalVisible = setModal('m2', false); // m1 is closed, while the other states are true in order
+     modalVisible = setModal('m2', false); // m2 is closed, while the other states are true in order
 }
 
 // m1 order is 2
