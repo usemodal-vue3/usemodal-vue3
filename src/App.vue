@@ -33,7 +33,15 @@
   }
 
   function okfn() {
-    modalVisible = setModal('m1', false);
+    setTimeout(() => {
+      modalVisible = setModal('m2', false);
+    }, 1000)
+  }
+
+  function cancelfn() {
+    setTimeout(() => {
+      modalShow.value = false;
+    }, 1000)
   }
 
   function onVisible() {
@@ -74,12 +82,20 @@
     :draggable= "true"
     @onVisible="onVisible2"
     @onUnVisible="onUnVisible"
+    :okButton="{
+      onclick: okfn,
+      loading: true
+    }"
     >
       <div>modal2</div>
   </Modal>
   <Modal
     v-model:visible="modalShow"
     :closable="false"
+    :cancelButton="{
+      onclick: cancelfn,
+      loading: true
+    }"
     >
       <div>modal3</div>
   </Modal>

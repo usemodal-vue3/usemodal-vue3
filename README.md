@@ -75,7 +75,7 @@ const handle = ref();
 
 ## Documentation
 
-### api
+### Props
 
 | params | Description | Type | Default |
 | :---- | :---- | :---- | :---- |
@@ -92,10 +92,10 @@ const handle = ref();
 | animation | Whether the animation pops up | boolean | true |
 | closable | Whether the close icon is visible or not | boolean | true |
 | draggable | Is it draggable? The default target is Header(Title), but you can also pass in an element(commonly used in type for 'clean') | boolean\|object | false |
-| cancelButton | Cancel button's text configuration and click callback | object | {text: 'cancel', onclick: () => {}} |
-| okButton | ok button's text configuration and click callback | object | {text: 'ok', onclick: () => {}} |
+| cancelButton | Cancel button configuration: <br />text: the text of the button.<br />onclick: Click callback function.<br />loading: Whether to display the loading animation after the button is clicked.| object | {text: 'cancel', onclick: () => {}, loading: false} |
+| okButton | Ok button configuration: <br />text: the text of the button.<br />onclick: Click callback function.<br />loading: Whether to display the loading animation after the button is clicked. | object | {text: 'ok', onclick: () => {}, loading: false} |
 
-### event
+### Event
 
 | event | Description | callback params |
 | :---- | :---- | :---- | 

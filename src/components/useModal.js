@@ -1,7 +1,6 @@
 
 import { defineComponent, h, reactive, ref , watch } from 'vue';
 
-const SCALE = 0.6;
 
 const currVisible = reactive({});
 const dep = {
@@ -111,7 +110,8 @@ export const Modal = defineComponent({
             default: () => {
                 return {
                     text: 'cancel',
-                    onclick: null
+                    onclick: null,
+                    loading: false
                 }
             },
         },
@@ -120,7 +120,8 @@ export const Modal = defineComponent({
             default: () => {
                 return {
                     text: 'ok',
-                    onclick: null
+                    onclick: null,
+                    loading: false
                 }
             },
         }
@@ -134,16 +135,34 @@ export const Modal = defineComponent({
 
         let currName = null;
         let visibalName = null;
-        let scale = ref(SCALE);
-        const animation = (scale) => {
-            let timer = null;
-            if(scale.value >= 1) {
+        let scale = reactive({
+            init: 0.6,
+            value: 0.6,
+            max: 1,
+            step: 0.02,
+            speed: 6,
+            linear: false,
+        });
+        let rotateVal = reactive({
+            init: 0,
+            value: 0,
+            max: 360,
+            step: 40,
+            speed: 40,
+            linear: true,
+        })
+        const animation = (target) => {
+            if(target.value >= target.max) {
+                if(target.linear) {
+                    target.value = target.init;
+                } else {
+                    target.value = target.max;
+                }
                 return false;
             } else {
-                clearTimeout(timer);
-                timer = setTimeout(() => {
-                    scale.value += 0.02;
-                }, 6)
+                setTimeout(() => {
+                    target.value += target.step;
+                }, target.speed)
             }
         }
 
@@ -162,6 +181,18 @@ export const Modal = defineComponent({
             }
         }
 
+        let buttonLoading = reactive({
+            value: false,
+            target: ''
+        })
+        const onButton = (props, target) => {
+            const btn = props[target];
+            if(!btn.loading || btn.loading && !buttonLoading.value) {
+                btn.onclick && typeof btn.onclick === 'function' ? btn.onclick() : cancel(props.name)
+                buttonLoading.value = true;
+                buttonLoading.target = target;
+            }
+        }
 
         const rectData = ref();
         const cententPosition = reactive({
@@ -213,23 +244,27 @@ export const Modal = defineComponent({
             if(slots.default) {
                 let visible = name ? props.visible[name] : props.visible;
                 if(visible) {
+                    if(buttonLoading.value) {
+                        animation(rotateVal);
+                    }
                     if(props.animation === false) {
-                        scale.value = 1;
+                        scale.value = scale.max;
                     } else {
                         if(currName != name) {
                             currName = name;
-                            scale.value = SCALE;
+                            scale.value = scale.init;
                         }
                         animation(scale);
                     }
-                    if(scale.value >= 1 && !rectData.value && visibalName != name) {
+                    if(scale.value >= scale.max && !rectData.value && visibalName != name) {
                         visibalName = name;
                         emit('onVisible')
                     }
                 } else {
                     if(visibalName == name || !name) {
-                        scale.value = SCALE;
+                        scale.value = scale.init;
                         visibalName = null;
+                        buttonLoading.value = false;
                         emit('onUnVisible')
                     }
                 }
@@ -280,14 +315,28 @@ export const Modal = defineComponent({
                             },[
                                 h('div', {
                                     class: 'modal-vue3-footer-cancel',
-                                    style: 'margin-right: 20px;width:60px;height:30px;border-radius:2px;border: 1px solid #d9d9d9;display:flex;justify-content:center;align-items:center;cursor:pointer;',
-                                    onclick: props.cancelButton.onclick && typeof props.cancelButton.onclick === 'function' ? props.cancelButton.onclick : () => {cancel(name)},
-                                },  props.cancelButton.text || 'cancel'),
+                                    style: `margin-right: 20px;height:30px;padding:0 8px;border-radius:2px;border: 1px solid #d9d9d9;display:flex;justify-content:center;align-items:center;cursor:pointer;position:relative;${buttonLoading.value && buttonLoading.target === 'cancelButton' ? 'opacity:.6;' : ''}`,
+                                    onclick:() => {onButton(props, 'cancelButton')},
+                                }, [
+                                    buttonLoading.value && buttonLoading.target === 'cancelButton' ? h('span', {
+                                        style: `width: 10px;height:10px;margin-right:5px;border:1px solid #666;border-radius:50%;border-top:1px solid transparent; transform:rotate(${rotateVal.value}deg);`
+                                    }) : null,
+                                    h('div',{
+                                       style: 'min-width:44px;text-align:center;'
+                                    }, props.cancelButton.text || 'cancel')
+                                ]),
                                 h('div', {
                                     class: 'modal-vue3-footer-ok',
-                                    style: 'width:60px;height:30px;border-radius:2px;display:flex;justify-content:center;align-items:center;background-color:#4395ff;color:#fff;cursor:pointer;',
-                                    onclick: props.okButton.onclick && typeof props.okButton.onclick === 'function' ? props.okButton.onclick : () => {cancel(name)},
-                                }, props.okButton.text || 'ok')
+                                    style: `height:30px;padding: 0 8px;border-radius:2px;display:flex;justify-content:center;align-items:center;background-color:#4395ff;color:#fff;cursor:pointer;position:relative;${buttonLoading.value && buttonLoading.target === 'okButton' ? 'opacity:.6;' : ''}`,
+                                    onclick:() => {onButton(props, 'okButton')},
+                                }, [
+                                    buttonLoading.value && buttonLoading.target === 'okButton' ? h('span', {
+                                        style: `width: 10px;height:10px;margin-right:5px;border:1px solid #fff;border-radius:50%;border-top:1px solid transparent; transform:rotate(${rotateVal.value}deg);`
+                                    }) : null,
+                                    h('div',{
+                                       style: 'min-width:44px;text-align:center;'
+                                    }, props.okButton.text || 'ok')
+                                ])
                             ]) : null,
                         ]
                         ),
