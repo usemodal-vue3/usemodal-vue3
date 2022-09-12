@@ -9,7 +9,7 @@
       m1: 4,
       m2: 3
     });
-    
+
     let modalVisible = reactive({});
     modalVisible = setModal('m1', true);
     setTimeout(() => {
