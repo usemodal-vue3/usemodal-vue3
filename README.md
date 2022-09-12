@@ -28,7 +28,7 @@ Your page may need to pop up multiple modals, and different modals may depend on
 import { reactive } from 'vue';
 import { useModal, Modal } from 'usemodal-vue3';
 
-let setModal = useModal({
+const setModal = useModal({
     m1: 2, // The larger the number, the later in the order
     m2: 1 // Smaller numbers, first in order
 });

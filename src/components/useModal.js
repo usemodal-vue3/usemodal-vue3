@@ -1,44 +1,42 @@
 
 import { defineComponent, h, reactive, ref , watch } from 'vue';
 
-
-const currVisible = reactive({});
-const dep = {
-    currOrder: 0,
-    triggerTotal: 0,
-    list: [],
-    track(modal) {
-        this.list.push(modal);
-    },
-    trigger(name, isVisible) {
-        this.triggerTotal++;
-        this.list = this.list.map(item => {
-            if(item.name === name) {
-                item.visible = isVisible;
-            }
-            return item;
-        })
-        if(this.triggerTotal >= this.list.length) {
-            // all modal be ready
-            if(this.currOrder < this.list.length) {
-                while(this.currOrder < this.list.length) {
-                    currVisible[this.list[this.currOrder].name] = this.list[this.currOrder].visible;
-                    if(this.list[this.currOrder].visible) {
-                        break;
-                    } else {
-                        this.currOrder++;
-                    }
+export function useModal(order) {
+    const currVisible = reactive({});
+    const dep = {
+        currOrder: 0,
+        triggerTotal: 0,
+        list: [],
+        track(modal) {
+            this.list.push(modal);
+        },
+        trigger(name, isVisible) {
+            this.triggerTotal++;
+            this.list = this.list.map(item => {
+                if(item.name === name) {
+                    item.visible = isVisible;
                 }
-                this.currOrder = 0;
-            } else {
-                this.triggerTotal = 0;
-                this.trigger(name, isVisible);
+                return item;
+            })
+            if(this.triggerTotal >= this.list.length) {
+                // all modal be ready
+                if(this.currOrder < this.list.length) {
+                    while(this.currOrder < this.list.length) {
+                        currVisible[this.list[this.currOrder].name] = this.list[this.currOrder].visible;
+                        if(this.list[this.currOrder].visible) {
+                            break;
+                        } else {
+                            this.currOrder++;
+                        }
+                    }
+                    this.currOrder = 0;
+                } else {
+                    this.triggerTotal = 0;
+                    this.trigger(name, isVisible);
+                }
             }
         }
     }
-}
-
-export function useModal(order) {
     if(order) {
         dep.list = [];
         for(let k in order) {
@@ -52,10 +50,12 @@ export function useModal(order) {
     }
     return function(el, visible) {
         dep.trigger(el, visible);
-        return currVisible;
+        return {
+            currVisible,
+            dep
+        };
     }
 }
-
 
 export const Modal = defineComponent({
     props: {
@@ -127,6 +127,7 @@ export const Modal = defineComponent({
         }
     },
     setup(props, { slots, emit }) {
+        let dep;
         const name = props.name;
         const width = typeof props.width === 'string' ?  props.width : `${props.width}px`;
         const offsetTop = typeof props.offsetTop === 'string' ?  props.offsetTop : `${props.offsetTop}px`;
@@ -242,7 +243,13 @@ export const Modal = defineComponent({
         })
         return () => {
             if(slots.default) {
-                let visible = name ? props.visible[name] : props.visible;
+                let visible;
+                if(typeof props.visible === 'boolean') {
+                    visible = props.visible;
+                } else {
+                    visible = props.visible.currVisible[name];
+                    dep = props.visible.dep;
+                }
                 if(visible) {
                     if(buttonLoading.value) {
                         animation(rotateVal);
