@@ -72,9 +72,6 @@
     <div @click="show3">show3</div>
     <Modal name="m1"
        v-model:visible="modalVisible"
-       :cancelButton = "{
-          onclick: cancel
-       }"
        :draggable= "handle"
        @onVisible="onVisible"
        @onUnVisible="onUnVisible1"
@@ -97,10 +94,6 @@
     <Modal
       v-model:visible="modalShow"
       :closable="false"
-      :cancelButton="{
-        onclick: cancelfn,
-        loading: true
-      }"
       >
         <div>modal3</div>
     </Modal>

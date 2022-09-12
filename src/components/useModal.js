@@ -6,7 +6,7 @@ export function useModal(order) {
     const dep = {
         currOrder: 0,
         triggerTotal: 0,
-        list: [],
+        list: [], // modals
         track(modal) {
             this.list.push(modal);
         },
@@ -168,7 +168,7 @@ export const Modal = defineComponent({
         }
 
         const cancel = (name) => {
-            if(name && dep.list.length > 0) {
+            if(name && dep.list.length > 0 && typeof props.visible === 'object') {
                 dep.trigger(name, false);
             } else {
                 emit('update:visible', false)
@@ -247,6 +247,7 @@ export const Modal = defineComponent({
                 if(typeof props.visible === 'boolean') {
                     visible = props.visible;
                 } else {
+                    // useModal for madals
                     visible = props.visible.currVisible[name];
                     dep = props.visible.dep;
                 }
