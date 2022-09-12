@@ -1,6 +1,15 @@
-import { defineComponent as z, ref as k, reactive as h, watch as W, h as i } from "vue";
-function V(e) {
-  const f = h({}), s = {
+import { defineComponent as V, ref as k, reactive as p, watch as X, h as i } from "vue";
+function w(e) {
+  return typeof e == "boolean";
+}
+function N(e) {
+  return typeof e == "number";
+}
+function S(e) {
+  return typeof e == "object" && e !== null;
+}
+function D(e) {
+  const f = p({}), u = {
     currOrder: 0,
     triggerTotal: 0,
     list: [],
@@ -18,24 +27,24 @@ function V(e) {
     }
   };
   if (e) {
-    s.list = [];
+    u.list = [];
     for (let n in e) {
       let l = {
         name: n,
         order: Number(e[n])
       };
-      s.track(l);
+      u.track(l);
     }
-    s.list.sort((n, l) => n.order - l.order);
+    u.list.sort((n, l) => n.order - l.order);
   }
   return function(n, l) {
-    return s.trigger(n, l), {
+    return u.trigger(n, l), {
       currVisible: f,
-      dep: s
+      dep: u
     };
   };
 }
-const X = z({
+const I = V({
   props: {
     visible: [Object, Boolean],
     name: String,
@@ -100,17 +109,17 @@ const X = z({
       })
     }
   },
-  setup(e, { slots: f, emit: s }) {
+  setup(e, { slots: f, emit: u }) {
     let n;
-    const l = e.name, g = typeof e.width == "string" ? e.width : `${e.width}px`, L = typeof e.offsetTop == "string" ? e.offsetTop : `${e.offsetTop}px`, w = k(null), v = k(null);
-    let B = null, m = null, r = h({
+    const l = e.name, g = typeof e.width == "string" ? e.width : `${e.width}px`, C = typeof e.offsetTop == "string" ? e.offsetTop : `${e.offsetTop}px`, B = k(null), v = k(null);
+    let $ = null, m = null, r = p({
       init: 0.6,
       value: 0.6,
       max: 1,
       step: 0.02,
       speed: 6,
       linear: !1
-    }), b = h({
+    }), b = p({
       init: 0,
       value: 0,
       max: 360,
@@ -118,55 +127,55 @@ const X = z({
       speed: 40,
       linear: !0
     });
-    const $ = (t) => {
+    const O = (t) => {
       if (t.value >= t.max)
         return t.linear ? t.value = t.init : t.value = t.max, !1;
       setTimeout(() => {
         t.value += t.step;
       }, t.speed);
     }, x = (t) => {
-      t && n.list.length > 0 ? n.trigger(t, !1) : s("update:visible", !1);
-    }, S = (t) => {
-      !e.maskClosable || !e.mask || t.target === w.value && x(l);
+      t && n.list.length > 0 && S(e.visible) ? n.trigger(t, !1) : u("update:visible", !1);
+    }, M = (t) => {
+      !e.maskClosable || !e.mask || t.target === B.value && x(l);
     };
-    let o = h({
+    let o = p({
       value: !1,
       target: ""
     });
-    const O = (t, c) => {
-      const u = t[c];
-      (!u.loading || u.loading && !o.value) && (u.onclick && typeof u.onclick == "function" ? u.onclick() : x(t.name), o.value = !0, o.target = c);
-    }, a = k(), d = h({
+    const T = (t, c) => {
+      const d = t[c];
+      (!d.loading || d.loading && !o.value) && (d.onclick && typeof d.onclick == "function" ? d.onclick() : x(t.name), o.value = !0, o.target = c);
+    }, a = k(), s = p({
       left: void 0,
       top: void 0
     }), y = (t) => {
       t.preventDefault(), t.stopPropagation();
-    }, T = (t) => {
-      let c = v.value.offsetLeft, u = v.value.offsetTop, C = {
+    }, j = (t) => {
+      let c = v.value.offsetLeft, d = v.value.offsetTop, z = {
         width: v.value.offsetWidth,
         height: v.value.offsetHeight,
         clientWidth: document.documentElement.clientWidth,
         clientHeight: document.documentElement.clientHeight,
         x: t.pageX - c,
-        y: t.pageY - u
+        y: t.pageY - d
       };
-      a.value = C, y(t);
-      const j = (p) => {
+      a.value = z, y(t);
+      const E = (h) => {
         if (!a.value)
           return;
-        let M = p.pageX, N = p.pageY;
-        d.left = Math.min(Math.max(M - a.value.x, 0), a.value.clientWidth - a.value.width), d.top = Math.min(Math.max(N - a.value.y, 0), a.value.clientHeight - a.value.height), y(p);
-      }, E = (p) => {
-        !a.value || (a.value = void 0, y(p), document.removeEventListener("pointermove", j), document.removeEventListener("pointerup", E));
+        let W = h.pageX, H = h.pageY;
+        s.left = Math.min(Math.max(W - a.value.x, 0), a.value.clientWidth - a.value.width), s.top = Math.min(Math.max(H - a.value.y, 0), a.value.clientHeight - a.value.height), y(h);
+      }, L = (h) => {
+        !a.value || (a.value = void 0, y(h), document.removeEventListener("pointermove", E), document.removeEventListener("pointerup", L));
       };
-      document.addEventListener("pointermove", j), document.addEventListener("pointerup", E);
+      document.addEventListener("pointermove", E), document.addEventListener("pointerup", L);
     };
-    return W(() => e.draggable, (t) => {
-      typeof t == "object" && t !== null && t.addEventListener("pointerdown", T);
+    return X(() => e.draggable, (t) => {
+      S(t) && t.addEventListener("pointerdown", j);
     }), () => {
       if (f.default) {
         let t;
-        return typeof e.visible == "boolean" ? t = e.visible : (t = e.visible.currVisible[l], n = e.visible.dep), t ? (o.value && $(b), e.animation === !1 ? r.value = r.max : (B != l && (B = l, r.value = r.init), $(r)), r.value >= r.max && !a.value && m != l && (m = l, s("onVisible"))) : (m == l || !l) && (r.value = r.init, m = null, o.value = !1, s("onUnVisible")), t ? i("div", {
+        return w(e.visible) ? t = e.visible : (t = e.visible.currVisible[l], n = e.visible.dep), t ? (o.value && O(b), e.animation === !1 ? r.value = r.max : ($ != l && ($ = l, r.value = r.init), O(r)), r.value >= r.max && !a.value && m != l && (m = l, u("onVisible"))) : (m == l || !l) && (r.value = r.init, m = null, o.value = !1, u("onUnVisible")), t ? i("div", {
           class: e.modalClass
         }, [
           e.mask ? i("div", {
@@ -174,10 +183,10 @@ const X = z({
             style: "width:100%;height:100%;position:fixed;left:0;top:0;background-color:rgba(0, 0, 0, 0.25)"
           }) : null,
           i("div", {
-            ref: w,
+            ref: B,
             style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${e.zIndex};overflow:auto;outline:0;`,
             onclick: (c) => {
-              S(c);
+              M(c);
             }
           }, [
             i(
@@ -185,13 +194,13 @@ const X = z({
               {
                 ref: v,
                 class: "modal-vue3-content",
-                style: `width:${g};position:relative;top:${typeof d.top == "number" ? d.top + "px" : L};left:${d.left ? d.left + "px" : ""};margin: ${typeof d.left == "number" ? "0" : "0 auto"}; ${e.type != "clean" ? "border:1px solid #f0f0f0;" : ""}overflow:auto;outline:0;box-sizing:border-box; ${e.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${r.value});`
+                style: `width:${g};position:relative;top:${N(s.top) ? s.top + "px" : C};left:${s.left ? s.left + "px" : ""};margin: ${N(s.left) ? "0" : "0 auto"}; ${e.type != "clean" ? "border:1px solid #f0f0f0;" : ""}overflow:auto;outline:0;box-sizing:border-box; ${e.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${r.value});`
               },
               [
                 e.type != "clean" ? i("div", {
                   class: "modal-vue3-header",
-                  style: `padding:12px 22px;border-bottom:1px solid #f0f0f0;position:relative;${e.draggable && typeof e.draggable == "boolean" ? "cursor:move;" : ""}`,
-                  onpointerdown: e.draggable && typeof e.draggable == "boolean" ? T : null
+                  style: `padding:12px 22px;border-bottom:1px solid #f0f0f0;position:relative;${e.draggable && w(e.draggable) ? "cursor:move;" : ""}`,
+                  onpointerdown: e.draggable && w(e.draggable) ? j : null
                 }, [
                   i("div", null, e.title),
                   e.closable ? i("div", {
@@ -220,7 +229,7 @@ const X = z({
                     class: "modal-vue3-footer-cancel",
                     style: `margin-right: 20px;height:30px;padding:0 8px;border-radius:2px;border: 1px solid #d9d9d9;display:flex;justify-content:center;align-items:center;cursor:pointer;position:relative;${o.value && o.target === "cancelButton" ? "opacity:.6;" : ""}`,
                     onclick: () => {
-                      O(e, "cancelButton");
+                      T(e, "cancelButton");
                     }
                   }, [
                     o.value && o.target === "cancelButton" ? i("span", {
@@ -234,7 +243,7 @@ const X = z({
                     class: "modal-vue3-footer-ok",
                     style: `height:30px;padding: 0 8px;border-radius:2px;display:flex;justify-content:center;align-items:center;background-color:#4395ff;color:#fff;cursor:pointer;position:relative;${o.value && o.target === "okButton" ? "opacity:.6;" : ""}`,
                     onclick: () => {
-                      O(e, "okButton");
+                      T(e, "okButton");
                     }
                   }, [
                     o.value && o.target === "okButton" ? i("span", {
@@ -254,6 +263,6 @@ const X = z({
   }
 });
 export {
-  X as Modal,
-  V as useModal
+  I as Modal,
+  D as useModal
 };

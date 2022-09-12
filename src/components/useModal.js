@@ -1,6 +1,16 @@
 
 import { defineComponent, h, reactive, ref , watch } from 'vue';
 
+function isBool(target) {
+    return typeof target === 'boolean';
+}
+function isNumber(target) {
+    return typeof target === 'number';
+}
+function isObject(target) {
+    return typeof target === 'object' && target !== null;
+}
+
 export function useModal(order) {
     const currVisible = reactive({});
     const dep = {
@@ -168,7 +178,7 @@ export const Modal = defineComponent({
         }
 
         const cancel = (name) => {
-            if(name && dep.list.length > 0 && typeof props.visible === 'object') {
+            if(name && dep.list.length > 0 && isObject(props.visible)) {
                 dep.trigger(name, false);
             } else {
                 emit('update:visible', false)
@@ -237,14 +247,14 @@ export const Modal = defineComponent({
             document.addEventListener('pointerup', end)
         }
         watch(() => props.draggable, (target) => {
-            if(typeof target === 'object' && target !== null) {
+            if(isObject(target)) {
                 target.addEventListener('pointerdown', start);
             }
         })
         return () => {
             if(slots.default) {
                 let visible;
-                if(typeof props.visible === 'boolean') {
+                if(isBool(props.visible)) {
                     visible = props.visible;
                 } else {
                     // useModal for madals
@@ -291,12 +301,12 @@ export const Modal = defineComponent({
                         h('div', {
                             ref: contentRef,
                             class: 'modal-vue3-content',
-                            style: `width:${width};position:relative;top:${typeof cententPosition.top === 'number' ? cententPosition.top+'px' : offsetTop};left:${cententPosition.left ? cententPosition.left+'px' : '' };margin: ${typeof cententPosition.left === 'number' ? '0' : '0 auto'}; ${props.type != 'clean' ? 'border:1px solid #f0f0f0;' : ''}overflow:auto;outline:0;box-sizing:border-box; ${props.type != 'clean' ? 'background-color:#fff;' : ''}border-radius:2px;transform:scale(${scale.value});`
+                            style: `width:${width};position:relative;top:${isNumber(cententPosition.top) ? cententPosition.top+'px' : offsetTop};left:${cententPosition.left ? cententPosition.left+'px' : '' };margin: ${isNumber(cententPosition.left) ? '0' : '0 auto'}; ${props.type != 'clean' ? 'border:1px solid #f0f0f0;' : ''}overflow:auto;outline:0;box-sizing:border-box; ${props.type != 'clean' ? 'background-color:#fff;' : ''}border-radius:2px;transform:scale(${scale.value});`
                         },[
                             props.type != 'clean' ? h('div', {
                                 class:"modal-vue3-header",
-                                style: `padding:12px 22px;border-bottom:1px solid #f0f0f0;position:relative;${props.draggable && typeof props.draggable === 'boolean' ? 'cursor:move;' : ''}`,
-                                onpointerdown: props.draggable && typeof props.draggable === 'boolean' ? start : null,
+                                style: `padding:12px 22px;border-bottom:1px solid #f0f0f0;position:relative;${props.draggable && isBool(props.draggable) ? 'cursor:move;' : ''}`,
+                                onpointerdown: props.draggable && isBool(props.draggable) ? start : null,
                             }, [
                                 h('div', null, props.title),
                                 props.closable ? h('div', {

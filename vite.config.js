@@ -12,20 +12,20 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  // build: {
-  //   outDir: 'usemodal-vue3',
-  //   lib: {
-  //     entry: path.resolve(__dirname, './src/components/useModal.js'),
-  //     name: 'usemodal-vue3',
-  //     fileName: 'usemodal-vue3'
-  //   },
-  //   rollupOptions: {
-  //     external: ['vue'],
-  //     output: {
-  //       globals: {
-  //         vue: 'Vue'
-  //       }
-  //     }
-  //   }
-  // }
+  build: {
+    outDir: 'usemodal-vue3',
+    lib: {
+      entry: path.resolve(__dirname, './src/components/useModal.js'),
+      name: 'usemodal-vue3',
+      fileName: 'usemodal-vue3'
+    },
+    rollupOptions: {
+      external: ['vue'],
+      output: {
+        globals: {
+          vue: 'Vue'
+        }
+      }
+    }
+  }
 })

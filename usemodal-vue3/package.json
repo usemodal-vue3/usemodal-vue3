@@ -1,6 +1,6 @@
 {
     "name": "usemodal-vue3",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "An easy-to-use Modal for Vue 3. Multiple modals can pop up orderly.",
     "main": "usemodal-vue3.umd.js",
     "scripts": {
