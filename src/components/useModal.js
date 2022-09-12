@@ -48,8 +48,8 @@ export function useModal(order) {
         }
         dep.list.sort((a, b) => a.order - b.order);
     }
-    return function(el, visible) {
-        dep.trigger(el, visible);
+    return function(name, visible) {
+        dep.trigger(name, visible);
         return {
             currVisible,
             dep
