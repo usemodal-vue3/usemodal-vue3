@@ -7,13 +7,17 @@
   
     const setModal = useModal({
       m1: 4,
-      m2: 3
+      m2: 3,
+      m3: 5
     });
 
     let modalVisible = reactive({});
     modalVisible = setModal('m1', true);
     setTimeout(() => {
       modalVisible = setModal('m2', true);
+    }, 1000)
+    setTimeout(() => {
+      modalVisible = setModal('m3', true);
     }, 1000)
 
   
@@ -90,6 +94,11 @@
       }"
       >
         <div>modal2</div>
+    </Modal>
+    <Modal name="m3" 
+      v-model:visible="modalVisible"
+      >
+        <div>modal3</div>
     </Modal>
     <Modal
       v-model:visible="modalShow"

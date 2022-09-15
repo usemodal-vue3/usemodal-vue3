@@ -22,6 +22,16 @@ let isVisible = ref(false);
 </Modal>
 ```
 
+## Use in Nuxt
+
+```javascript
+<client-only>
+    <Modal v-model:visible="isVisible">
+        <div>your content...</div>
+    </Modal>
+</client-only>
+```
+
 Your page may need to pop up multiple modals, and different modals may depend on different data sources, sometimes even asynchronously, you can easily manage their popup order.
 
 ```javascript
