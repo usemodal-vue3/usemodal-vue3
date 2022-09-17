@@ -1,15 +1,15 @@
-import { defineComponent as V, ref as k, reactive as p, watch as I, h as i } from "vue";
-function w(e) {
+import { defineComponent as V, ref as $, reactive as m, watch as I, h as i } from "vue";
+function O(e) {
   return typeof e == "boolean";
 }
-function L(e) {
+function N(e) {
   return typeof e == "number";
 }
-function N(e) {
+function S(e) {
   return typeof e == "object" && e !== null;
 }
 function Y(e) {
-  const f = p({}), u = {
+  const v = m({}), d = {
     currOrder: 0,
     triggerTotal: 0,
     list: [],
@@ -19,7 +19,7 @@ function Y(e) {
     trigger(n, l) {
       if (this.triggerTotal++, this.list = this.list.map((g) => (g.name === n && (g.visible = l), g)), this.triggerTotal >= this.list.length)
         if (this.currOrder < this.list.length) {
-          for (; this.currOrder < this.list.length && (f[this.list[this.currOrder].name] = this.list[this.currOrder].visible, !this.list[this.currOrder].visible); )
+          for (; this.currOrder < this.list.length && (v[this.list[this.currOrder].name] = this.list[this.currOrder].visible, !this.list[this.currOrder].visible); )
             this.currOrder++;
           this.currOrder = 0;
         } else
@@ -27,20 +27,20 @@ function Y(e) {
     }
   };
   if (e) {
-    u.list = [];
+    d.list = [];
     for (let n in e) {
       let l = {
         name: n,
         order: Number(e[n])
       };
-      u.track(l);
+      d.track(l);
     }
-    u.list.sort((n, l) => n.order - l.order);
+    d.list.sort((n, l) => n.order - l.order);
   }
   return function(n, l) {
-    return u.trigger(n, l), {
-      currVisible: f,
-      dep: u
+    return d.trigger(n, l), {
+      currVisible: v,
+      dep: d
     };
   };
 }
@@ -109,73 +109,76 @@ const D = V({
       })
     }
   },
-  setup(e, { slots: f, emit: u }) {
+  setup(e, { slots: v, emit: d }) {
     let n;
-    const l = e.name, g = typeof e.width == "string" ? e.width : `${e.width}px`, S = typeof e.offsetTop == "string" ? e.offsetTop : `${e.offsetTop}px`, B = k(null), v = k(null);
-    let $ = null, m = null, r = p({
-      init: 0.6,
-      value: 0.6,
+    const l = e.name, g = typeof e.width == "string" ? e.width : `${e.width}px`, C = typeof e.offsetTop == "string" ? e.offsetTop : `${e.offsetTop}px`, T = $(null), p = $(null);
+    let j = null, x = null, a = m({
+      init: 0.5,
+      value: 0.5,
       max: 1,
       step: 0.02,
-      speed: 6,
+      speed: 5,
       linear: !1
-    }), x = p({
+    }), b = m({
       init: 0,
       value: 0,
       max: 360,
-      step: 40,
-      speed: 40,
+      step: 30,
+      speed: 30,
       linear: !0
     });
-    const O = (t) => {
-      if (t.value >= t.max)
-        return t.linear ? t.value = t.init : t.value = t.max, !1;
+    const y = (t, s, u) => {
+      let B = s ? t.max : t.init, c = s ? t.init : t.max;
+      if (s ? t.value <= c : t.value >= c)
+        return t.linear ? t.value = B : (t.value = c, u && u()), !1;
       setTimeout(() => {
-        t.value += t.step;
+        s ? t.value -= t.step : t.value += t.step;
       }, t.speed);
-    }, b = (t) => {
-      t && n.list.length > 0 && N(e.visible) ? n.trigger(t, !1) : u("update:visible", !1);
-    }, C = (t) => {
-      !e.maskClosable || !e.mask || t.target === B.value && b(l);
+    }, k = (t) => {
+      t && n.list.length > 0 && S(e.visible) ? n.trigger(t, !1) : d("update:visible", !1);
+    }, M = (t) => {
+      !e.maskClosable || !e.mask || t.target === T.value && k(l);
     };
-    let o = p({
+    let o = m({
       value: !1,
       target: ""
     });
-    const T = (t, c) => {
-      const d = t[c];
-      (!d.loading || d.loading && !o.value) && (d.onclick && typeof d.onclick == "function" ? d.onclick() : b(t.name), o.value = !0, o.target = c);
-    }, a = k(), s = p({
+    const E = (t, s) => {
+      const u = t[s];
+      (!u.loading || u.loading && !o.value) && (u.onclick && typeof u.onclick == "function" ? u.onclick() : k(t.name), o.value = !0, o.target = s);
+    }, r = $(), f = m({
       left: void 0,
       top: void 0
-    }), y = (t) => {
+    }), w = (t) => {
       t.preventDefault(), t.stopPropagation();
-    }, j = (t) => {
-      let c = v.value.offsetLeft, d = v.value.offsetTop, M = {
-        width: v.value.offsetWidth,
-        height: v.value.offsetHeight,
+    }, z = (t) => {
+      let s = p.value.offsetLeft, u = p.value.offsetTop, B = {
+        width: p.value.offsetWidth,
+        height: p.value.offsetHeight,
         clientWidth: document.documentElement.clientWidth,
         clientHeight: document.documentElement.clientHeight,
-        x: t.pageX - c,
-        y: t.pageY - d
+        x: t.pageX - s,
+        y: t.pageY - u
       };
-      a.value = M, y(t);
-      const E = (h) => {
-        if (!a.value)
+      r.value = B, w(t);
+      const c = (h) => {
+        if (!r.value)
           return;
         let W = h.pageX, H = h.pageY;
-        s.left = Math.min(Math.max(W - a.value.x, 0), a.value.clientWidth - a.value.width), s.top = Math.min(Math.max(H - a.value.y, 0), a.value.clientHeight - a.value.height), y(h);
-      }, z = (h) => {
-        !a.value || (a.value = void 0, y(h), document.removeEventListener("pointermove", E), document.removeEventListener("pointerup", z));
+        f.left = Math.min(Math.max(W - r.value.x, 0), r.value.clientWidth - r.value.width), f.top = Math.min(Math.max(H - r.value.y, 0), r.value.clientHeight - r.value.height), w(h);
+      }, L = (h) => {
+        !r.value || (r.value = void 0, w(h), document.removeEventListener("pointermove", c), document.removeEventListener("pointerup", L));
       };
-      document.addEventListener("pointermove", E), document.addEventListener("pointerup", z);
+      document.addEventListener("pointermove", c), document.addEventListener("pointerup", L);
     };
     return I(() => e.draggable, (t) => {
-      N(t) && t.addEventListener("pointerdown", j);
+      S(t) && t.addEventListener("pointerdown", z);
     }), () => {
-      if (f.default) {
+      if (v.default) {
         let t;
-        return w(e.visible) ? t = e.visible : (t = e.visible.currVisible[l], n = e.visible.dep), t ? (o.value && O(x), e.animation === !1 ? r.value = r.max : ($ != l && ($ = l, r.value = r.init), O(r)), r.value >= r.max && !a.value && m != l && (m = l, u("onVisible"))) : (m == l || !l) && (r.value = r.init, m = null, o.value = !1, u("onUnVisible")), t ? i("div", {
+        return O(e.visible) ? t = e.visible : (t = e.visible.currVisible[l], n = e.visible.dep), t ? (o.value && y(b), e.animation === !1 ? a.value = a.max : (j != l && (j = l, a.value = a.init), a.speed = 5, y(a)), a.value >= a.max && !r.value && x != l && (x = l, d("onVisible"))) : (x == l || !l) && (t = !0, a.speed = 2, y(a, !0, () => {
+          t = !1, x = null, o.value = !1, d("onUnVisible");
+        })), t ? i("div", {
           class: e.modalClass
         }, [
           e.mask ? i("div", {
@@ -183,30 +186,30 @@ const D = V({
             style: `width:100%;height:100%;position:fixed;left:0;top:0;background-color:rgba(0, 0, 0, 0.25);z-index:${e.zIndex - 1};`
           }) : null,
           i("div", {
-            ref: B,
+            ref: T,
             style: `position:fixed;left:0;right:0;top:0;bottom:0;margin: 0 auto;z-index:${e.zIndex};overflow:auto;outline:0;`,
-            onclick: (c) => {
-              C(c);
+            onclick: (s) => {
+              M(s);
             }
           }, [
             i(
               "div",
               {
-                ref: v,
+                ref: p,
                 class: "modal-vue3-content",
-                style: `width:${g};position:relative;top:${L(s.top) ? s.top + "px" : S};left:${s.left ? s.left + "px" : ""};margin: ${L(s.left) ? "0" : "0 auto"}; ${e.type != "clean" ? "border:1px solid #f0f0f0;" : ""}overflow:auto;outline:0;box-sizing:border-box; ${e.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${r.value});`
+                style: `width:${g};position:relative;top:${N(f.top) ? f.top + "px" : C};left:${f.left ? f.left + "px" : ""};margin: ${N(f.left) ? "0" : "0 auto"}; ${e.type != "clean" ? "border:1px solid #f0f0f0;" : ""}overflow:auto;outline:0;box-sizing:border-box; ${e.type != "clean" ? "background-color:#fff;" : ""}border-radius:2px;transform:scale(${a.value});`
               },
               [
                 e.type != "clean" ? i("div", {
                   class: "modal-vue3-header",
-                  style: `padding:12px 22px;border-bottom:1px solid #f0f0f0;position:relative;${e.draggable && w(e.draggable) ? "cursor:move;" : ""}`,
-                  onpointerdown: e.draggable && w(e.draggable) ? j : null
+                  style: `padding:12px 22px;border-bottom:1px solid #f0f0f0;position:relative;${e.draggable && O(e.draggable) ? "cursor:move;" : ""}`,
+                  onpointerdown: e.draggable && O(e.draggable) ? z : null
                 }, [
                   i("div", null, e.title),
                   e.closable ? i("div", {
                     style: "width:20px;height:16px;cursor:pointer;position:absolute;top:15px;right:15px;font-size: 20px;",
                     onclick: () => {
-                      b(l);
+                      k(l);
                     }
                   }, [
                     i("div", {
@@ -220,7 +223,7 @@ const D = V({
                 i("div", {
                   class: "modal-vue3-body",
                   style: e.type != "clean" ? "padding: 14px 22px" : ""
-                }, f.default()),
+                }, v.default()),
                 e.type != "clean" ? i("div", {
                   class: "modal-vue3-footer",
                   style: "padding: 12px 22px;display:flex;justify-content:flex-end;align-items:center;border-top:1px solid #f0f0f0;"
@@ -229,11 +232,11 @@ const D = V({
                     class: "modal-vue3-footer-cancel",
                     style: `margin-right: 20px;height:30px;padding:0 8px;border-radius:2px;border: 1px solid #d9d9d9;display:flex;justify-content:center;align-items:center;cursor:pointer;position:relative;${o.value && o.target === "cancelButton" ? "opacity:.6;" : ""}`,
                     onclick: () => {
-                      T(e, "cancelButton");
+                      E(e, "cancelButton");
                     }
                   }, [
                     o.value && o.target === "cancelButton" ? i("span", {
-                      style: `width: 10px;height:10px;margin-right:5px;border:1px solid #666;border-radius:50%;border-top:1px solid transparent; transform:rotate(${x.value}deg);`
+                      style: `width: 10px;height:10px;margin-right:5px;border:1px solid #666;border-radius:50%;border-top:1px solid transparent; transform:rotate(${b.value}deg);`
                     }) : null,
                     i("div", {
                       style: "min-width:44px;text-align:center;"
@@ -243,11 +246,11 @@ const D = V({
                     class: "modal-vue3-footer-ok",
                     style: `height:30px;padding: 0 8px;border-radius:2px;display:flex;justify-content:center;align-items:center;background-color:#4395ff;color:#fff;cursor:pointer;position:relative;${o.value && o.target === "okButton" ? "opacity:.6;" : ""}`,
                     onclick: () => {
-                      T(e, "okButton");
+                      E(e, "okButton");
                     }
                   }, [
                     o.value && o.target === "okButton" ? i("span", {
-                      style: `width: 10px;height:10px;margin-right:5px;border:1px solid #fff;border-radius:50%;border-top:1px solid transparent; transform:rotate(${x.value}deg);`
+                      style: `width: 10px;height:10px;margin-right:5px;border:1px solid #fff;border-radius:50%;border-top:1px solid transparent; transform:rotate(${b.value}deg);`
                     }) : null,
                     i("div", {
                       style: "min-width:44px;text-align:center;"

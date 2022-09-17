@@ -147,32 +147,39 @@ export const Modal = defineComponent({
         let currName = null;
         let visibalName = null;
         let scale = reactive({
-            init: 0.6,
-            value: 0.6,
+            init: 0.5,
+            value: 0.5,
             max: 1,
             step: 0.02,
-            speed: 6,
+            speed: 5,
             linear: false,
         });
         let rotateVal = reactive({
             init: 0,
             value: 0,
             max: 360,
-            step: 40,
-            speed: 40,
+            step: 30,
+            speed: 30,
             linear: true,
         })
-        const animation = (target) => {
-            if(target.value >= target.max) {
+        const animation = (target, contrary, cb) => {
+            let start = contrary ? target.max : target.init;
+            let end = contrary ? target.init : target.max;
+            if(contrary ? target.value <= end : target.value >= end) {
                 if(target.linear) {
-                    target.value = target.init;
+                    target.value = start;
                 } else {
-                    target.value = target.max;
+                    target.value = end;
+                    cb && cb();
                 }
                 return false;
             } else {
                 setTimeout(() => {
-                    target.value += target.step;
+                    if(contrary) {
+                        target.value -= target.step;
+                    } else {
+                        target.value += target.step;
+                    }
                 }, target.speed)
             }
         }
@@ -272,6 +279,7 @@ export const Modal = defineComponent({
                             currName = name;
                             scale.value = scale.init;
                         }
+                        scale.speed = 5;
                         animation(scale);
                     }
                     if(scale.value >= scale.max && !rectData.value && visibalName != name) {
@@ -280,10 +288,14 @@ export const Modal = defineComponent({
                     }
                 } else {
                     if(visibalName == name || !name) {
-                        scale.value = scale.init;
-                        visibalName = null;
-                        buttonLoading.value = false;
-                        emit('onUnVisible')
+                        visible = true;
+                        scale.speed = 2;
+                        animation(scale, true, () => {
+                            visible = false;
+                            visibalName = null;
+                            buttonLoading.value = false;
+                            emit('onUnVisible')
+                        });
                     }
                 }
                 return visible ? h('div', {
