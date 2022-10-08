@@ -16,8 +16,9 @@ export default defineConfig({
     outDir: 'usemodal-vue3',
     lib: {
       entry: path.resolve(__dirname, './src/components/useModal.js'),
-      name: 'usemodal-vue3',
-      fileName: 'usemodal-vue3'
+      name: 'index',
+      fileName: 'index',
+      formats: ['umd', 'es']
     },
     rollupOptions: {
       external: ['vue'],
