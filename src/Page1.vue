@@ -76,6 +76,7 @@
     <div @click="show3">show3</div>
     <Modal name="m1"
        v-model:visible="modalVisible"
+       :animation="true"
        :draggable= "handle"
        @onVisible="onVisible"
        @onUnVisible="onUnVisible1"
@@ -84,6 +85,7 @@
     </Modal>
     <Modal name="m2" 
       v-model:visible="modalVisible"
+      :animation="true"
       :closable="false"
       :draggable= "true"
       @onVisible="onVisible2"
@@ -96,6 +98,7 @@
         <div>modal2</div>
     </Modal>
     <Modal name="m3" 
+    :animation="true"
       v-model:visible="modalVisible"
       >
         <div>modal3</div>

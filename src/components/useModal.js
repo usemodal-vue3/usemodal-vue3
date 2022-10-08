@@ -147,11 +147,11 @@ export const Modal = defineComponent({
         let currName = null;
         let visibalName = null;
         let scale = reactive({
-            init: 0.5,
-            value: 0.5,
-            max: 1,
-            step: 0.02,
-            speed: 5,
+            init: -15,
+            value: -15,
+            max: 0,
+            step: 1,
+            speed: 10,
             linear: false,
         });
         let rotateVal = reactive({
@@ -207,8 +207,10 @@ export const Modal = defineComponent({
             const btn = props[target];
             if(!btn.loading || btn.loading && !buttonLoading.value) {
                 btn.onclick && typeof btn.onclick === 'function' ? btn.onclick() : cancel(props.name)
-                buttonLoading.value = true;
-                buttonLoading.target = target;
+                if(btn.loading) {
+                    buttonLoading.value = true;
+                    buttonLoading.target = target;
+                }
             }
         }
 
@@ -288,14 +290,18 @@ export const Modal = defineComponent({
                     }
                 } else {
                     if(visibalName == name || !name) {
-                        visible = true;
-                        scale.speed = 2;
-                        animation(scale, true, () => {
+                        if(props.animation === false) {
                             visible = false;
-                            visibalName = null;
-                            buttonLoading.value = false;
-                            emit('onUnVisible')
-                        });
+                        } else {
+                            visible = true;
+                            scale.speed = 2;
+                            animation(scale, true, () => {
+                                visible = false;
+                                visibalName = null;
+                                buttonLoading.value = false;
+                                emit('onUnVisible')
+                            });
+                        }
                     }
                 }
                 return visible ? h('div', {
@@ -313,7 +319,7 @@ export const Modal = defineComponent({
                         h('div', {
                             ref: contentRef,
                             class: 'modal-vue3-content',
-                            style: `width:${width};position:relative;top:${isNumber(cententPosition.top) ? cententPosition.top+'px' : offsetTop};left:${cententPosition.left ? cententPosition.left+'px' : '' };margin: ${isNumber(cententPosition.left) ? '0' : '0 auto'}; ${props.type != 'clean' ? 'border:1px solid #f0f0f0;' : ''}overflow:auto;outline:0;box-sizing:border-box; ${props.type != 'clean' ? 'background-color:#fff;' : ''}border-radius:2px;transform:scale(${scale.value});`
+                            style: `width:${width};position:relative;top:${isNumber(cententPosition.top) ? cententPosition.top+'px' : offsetTop};left:${cententPosition.left ? cententPosition.left+'px' : '' };margin: ${isNumber(cententPosition.left) ? '0' : '0 auto'}; ${props.type != 'clean' ? 'border:1px solid #f0f0f0;' : ''}overflow:auto;outline:0;box-sizing:border-box; ${props.type != 'clean' ? 'background-color:#fff;' : ''}border-radius:2px;transform:translateY(${scale.value}px);`
                         },[
                             props.type != 'clean' ? h('div', {
                                 class:"modal-vue3-header",
