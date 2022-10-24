@@ -6,9 +6,6 @@ An easy-to-use Modal for Vue 3. Multiple modals can pop up orderly.
 ## Install
 `npm i usemodal-vue3`
 
-## CDN
-`https://www.unpkg.com/usemodal-vue3`
-
 ## Usage
 
 ```javascript

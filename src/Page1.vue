@@ -1,7 +1,7 @@
 <script setup>
     import { reactive, ref, onUnmounted } from 'vue';
-    // import { useModal, Modal } from './components/useModal';
-    import { useModal, Modal } from 'usemodal-vue3';
+    import { useModal, Modal } from './components/useModal';
+    // import { useModal, Modal } from 'usemodal-vue3';
   
     const handle = ref();
   
